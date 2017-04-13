@@ -30,6 +30,17 @@
 
 (supposed) Getting info about path.
 
+#### Query params
+
+* **home** (`/Cards`) - path to file
+* **api** (`2`) - (supposed) api version number
+* **build** (`hotfix_CLOUDWEB-7479_41-0-2.201703311709`) - (supposed) client version
+* **x-page-id** (`IQFp762REe`) - (???)
+* **email** (`roman.charugin@mail.ru`) - user email
+* **x-email** (`roman.charugin@mail.ru`) - (supposed) additional user email (against CSRF)
+* **token** (`8UaGHDKdytLnS7rUM4yhL2UexPr7QsdY`) - auth token
+* **_** (`1492087095170`) - (supposed) timestamp
+
 #### Response
 
 ```
@@ -53,9 +64,55 @@
 }
 ```
 
+### `OPTIONS https://%server_name%.cloud.mail.ru/upload`
+
+(supposed) Getting info about file uploading options
+
+
+### `POST https://%server_name%.cloud.mail.ru/upload`
+
+Uploading file to cloud
+
+#### Query params
+
+* **cloud_domain** (`2`) - (supposed) number of cloud domain
+* **x-email** (`roman.charugin@mail.ru`) - user email
+* **fileapi149208709514114** - (supposed) file API version
+
+#### Response
+
+```
+3C194D206659B0678EDF17E21050BF82B277BCFC;5809
+```
+
+Consists of file hash and file size separated by semicolon.
+
 ### `POST /file/add`
 
-(WIP)
+Adding file to the cloud. (!) Not uploading, but adding uploaded file to the cloud.
+
+#### Form data
+
+* **home** (`//javascript9.ics`) - path to save the file
+* **hash** (`3C194D206659B0678EDF17E21050BF82B277BCFC`) - file hash
+* **size** (`5809`) - file size
+* **conflict** (`rename`) - (supposed) strategy name in case of file is already exists
+* **api** (`2`) - (supposed) api version
+* **build** (`hotfix_CLOUDWEB-7479_41-0-2.201703311709`) - (supposed) client version
+* **x-page-id** (`IQFp762REe`) - (???)
+* **email** (`roman.charugin@mail.ru`) - user email
+* **x-email** (`roman.charugin@mail.ru`) - (supposed) additional user email (against CSRF)
+* **token** (`8UaGHDKdytLnS7rUM4yhL2UexPr7QsdY`) - auth token
+
+#### Response
+```
+{
+  "email": "roman.charugin@mail.ru",
+  "body": "/javascript9 (1).ics",
+  "time": 1492092621078,
+  "status": 200
+}
+```
 
 ### `POST /file/move`
 
@@ -150,7 +207,28 @@
 
 ### `GET /folder/invites`
 
-(WIP)
+(supposed) Working with invites
+
+#### Query params
+
+* **api** (`2`) - (supposed) api version number
+* **build** (`hotfix_CLOUDWEB-7479_41-0-2.201703311709`) - (supposed) client version
+* **x-page-id** (`IQFp762REe`) - (???)
+* **email** (`roman.charugin@mail.ru`) - user email
+* **x-email** (`roman.charugin@mail.ru`) - (supposed) additional user email (against CSRF)
+* **token** (`aFFREMTZBQfxHZadefemdkJv8S6fLxxo`) - auth token
+* **_** (`1492087095134`) - (supposed) timestamp
+
+#### Response
+
+```
+{
+  "email": "roman.charugin@mail.ru",
+  "body": [],
+  "time": 1492087096085,
+  "status": "200"
+}
+```
 
 ### `GET /folder/shared/links`
 
@@ -285,7 +363,7 @@ Getting info about space.
 * **email** (`roman.charugin@mail.ru`) - user email
 * **x-email** (`roman.charugin@mail.ru`) - (supposed) additional user email (against CSRF)
 * **token** (`8UaGHDKdytLnS7rUM4yhL2UexPr7QsdY`) - auth-token
-* **_** (`1492087095137`) - (supposed) additional hash number
+* **_** (`1492087095137`) - (supposed) timestamp
 
 #### Response
 
