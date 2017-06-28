@@ -1,0 +1,31 @@
+{
+  "name": "mailru-cloud",
+  "version": "1.0.0",
+  "description": "NodeJS client for Mail.ru Cloud service",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RomiC/mailru-cloud.git"
+  },
+  "keywords": [
+    "cloud",
+    "drive",
+    "mailru"
+  ],
+  "author": "Roman Charugin <i@charugin.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RomiC/mailru-cloud/issues"
+  },
+  "homepage": "https://github.com/RomiC/mailru-cloud#readme",
+  "devDependencies": {
+    "form-data": "^2.2.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "request-promise": "^4.2.1"
+  }
+}
