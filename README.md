@@ -1,5 +1,53 @@
 # Mail.ru Cloud service client
 
+## Authentification
+
+### 1. Common auth on the mail.ru service
+
+`POST https://auth.mail.ru/cgi-bin/auth?lang=ru_RU&from=authpop`
+
+#### Form data
+
+* **Domain** (`mail.ru`) - domain of the user email
+* **Login** (`username`) - user login
+* **Password** (`my_security_pass`) - user password
+
+#### Response
+
+Mostly come with 302-redirect header. In case of successfull authorization, the following cookies will be sent as well:
+
+```
+GarageID=e2915d7c8fd1469c85f5b7e176e14b43; domain=.auth.mail.ru
+Mpop=1498566275:62075b6f605d0871190502190805001b0b0d1d0205084b6a515f475a030503091f04077b164a5e5d50591b545d5046425e585e1755535b54174b44:roman.charugin@mail.ru:; domain=.mail.ru
+ssdc=392a7dc9fca94adebec2fe465c21a4b5; domain=.auth.mail.ru
+ssdc_info=392a:0:1498566275; domain=.auth.mail.ru
+t=obLD1AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAgAAAAjABADwwcA; domain=.mail.ru
+```
+
+### 2. Getting sdc-url
+
+`GET https://auth.mail.ru/sdc?from=https%3A%2F%2Fcloud.mail.ru%2Fhome%2F`
+
+You should send all relevant cookies received on the first step also.
+
+#### Response
+
+In any case you'll receive 302-redirect. Redirect to URL like this one `https://cloud.mail.ru/sdc?token=55b6c1939260442a9a10b59abbba1689` means OK. Any other means error.
+
+### 3. Getting sdc-token
+
+You should follow the success redirect gotted on the previous step.
+
+#### Response
+
+In case of success you'll receive the following cookie:
+
+```
+Set-Cookie: sdcs=9twPDC5SufkeQLKj; domain=.cloud.mail.ru
+```
+
+### 4. Getting
+
 ## Base URL
 
 `https://cloud.mail.ru`
@@ -8,6 +56,13 @@
 
 `/api/v2`
 
+## Authorization
+
+For any of requests below you must provide the following cookies:
+* **Mpop** - which you receive during the [first authentification request](#1-common-auth-on-the-mailru-service)
+* **sdcs** - See "[Getting sdc token](#3-getting-sdc-token)" section
+
+Each method (excepts `/tokens/csrf`) requires `token` param in the query as well.
 ## List of methods
 
 ### `POST /batch`
@@ -43,7 +98,7 @@
 
 #### Response
 
-```
+```json
 {
   "email": "roman.charugin@mail.ru",
   "body": {
@@ -105,7 +160,7 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 * **token** (`8UaGHDKdytLnS7rUM4yhL2UexPr7QsdY`) - auth token
 
 #### Response
-```
+```json
 {
   "email": "roman.charugin@mail.ru",
   "body": "/javascript9 (1).ics",
@@ -142,7 +197,7 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 
 #### Response
 
-```
+```json
 {
   "email": "roman.charugin@mail.ru",
   "body": {
@@ -221,7 +276,7 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 
 #### Response
 
-```
+```json
 {
   "email": "roman.charugin@mail.ru",
   "body": [],
@@ -304,7 +359,7 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 
 #### Response
 
-```
+```json
 {
   "email": "roman.charugin@mail.ru",
   "body": {
@@ -367,7 +422,7 @@ Getting info about space.
 
 #### Response
 
-```
+```json
 {
   "email": "roman.charugin@mail.ru",
   "body": {
@@ -427,3 +482,66 @@ Getting info about space.
 ### `GET /domain/folders`
 
 (WIP)
+
+## Clouder widget
+
+### Base URL
+
+`https://clouder-api.mail.ru`
+
+### Base URI
+
+`/api/v1`
+
+### List of methods
+
+#### `GET /ls/%path%`
+
+Get list of folders
+
+##### Response
+
+```json
+{
+  "name": "/",
+  "type": "d",
+  "list": [
+    {
+      "name": "Saved from Clouder",
+      "type": "d"
+    },
+    …
+    {
+      "mtime": 1399443686,
+      "name": "V44516-01.zip",
+      "size": 305781756,
+      "public": 1,
+      "type": "f"
+    },
+    …
+  ]
+}
+```
+
+#### `PUT /create/[%path%/]%filename%`
+
+#### Query params
+
+* **mode** (`autorename`) — what to do in case of file is being exists on cloud
+
+#### Body
+
+File content in binary mode.
+
+#### Response
+
+```json
+{
+  "mtime": 1492519798,
+  "name": "photos2.zip",
+  "type": "f",
+  "size": 6896328
+}
+```
+
+`409 (Conflict)` in case of file already exists and no autorename mode provide.
