@@ -78,7 +78,30 @@ Each method (excepts `/tokens/csrf`) requires `token` param in the query as well
 
 ### `GET /dispatcher`
 
-(WIP)
+Get dipatcher info. Collection of properties including links for upload and download.
+
+#### Response
+
+```json
+{
+  "email": "me@mail.ru",
+	"body": {
+		"video": [{"count": "3", "url": "https://cloclo22.datacloudmail.ru/video/"}],
+		"view_direct": [{"count": "250", "url": "http://cloclo18.cloud.mail.ru/docdl/"}],
+		"weblink_view": [{"count": "50", "url": "https://cloclo18.datacloudmail.ru/weblink/view/"}],
+		"weblink_video": [{"count": "3", "url": "https://cloclo18.datacloudmail.ru/videowl/"}],
+		"weblink_get": [{"count": 1, "url": "https://cloclo27.cldmail.ru/2yoHNmAc9HVQzZU1hcyM/G"}],
+		"weblink_thumbnails": [{"count": "50", "url": "https://cloclo3.datacloudmail.ru/weblink/thumb/"}],
+		"auth": [{"count": "500", "url": "https://swa.mail.ru/cgi-bin/auth"}],
+		"view": [{"count": "250", "url": "https://cloclo2.datacloudmail.ru/view/"}],
+		"get": [{"count": "100", "url": "https://cloclo27.datacloudmail.ru/get/"}],
+		"upload": [{"count": "25", "url": "https://cloclo22-upload.cloud.mail.ru/upload/"}],
+		"thumbnails": [{"count": "250", "url": "https://cloclo3.cloud.mail.ru/thumb/"}]
+	},
+	"time": 1457101607726,
+	"status": 200
+}
+```
 
 ### `POST /docs/token`
 
@@ -140,6 +163,8 @@ Uploading file to cloud. Require `Mpop`-cookie plus valid `User-Agent` header. `
 ```
 3C194D206659B0678EDF17E21050BF82B277BCFC;5809
 ```
+
+### `POST https://%server_name%.cloud.mail.ru/refrsh`
 
 Consists of file hash and file size separated by semicolon.
 
