@@ -5,10 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Launch server.js via nodemon",
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceRoot}\\examples\\auth.js"
+      "runtimeExecutable": "nodemon",
+      "program": "${workspaceRoot}/examples/file.js",
+      "restart": true,
+      "console": "integratedTerminal"
     }
   ]
 }
