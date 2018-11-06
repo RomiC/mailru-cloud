@@ -7,17 +7,12 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/examples/user.js"
-    },
-    {
-      "name": "Launch server.js via nodemon",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "nodemon",
-      "program": "${workspaceRoot}/examples/file.js",
-      "restart": true,
-      "console": "integratedTerminal"
+      "name": "Launch current file w/ ts-node",
+      "protocol": "inspector",
+      "args": ["${relativeFile}"],
+      "cwd": "${workspaceRoot}",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }

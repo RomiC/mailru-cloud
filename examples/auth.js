@@ -1,7 +1,7 @@
 const { default: auth } = require('../lib/auth');
-const { login, password, domain } = require('./credentials');
+const { LOGIN, PASSWORD, DOMAIN } = require('./credentials');
 
-auth(login, password, domain)
+auth(LOGIN, PASSWORD, DOMAIN)
   .then((auth) => {
     auth;
   });

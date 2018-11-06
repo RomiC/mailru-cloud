@@ -1,5 +1,5 @@
 module.exports = {
-  login: '',
-  password: '',
-  domain: ''
+  LOGIN: '',
+  PASSWORD: '',
+  DOMAIN: ''
 };

@@ -1,74 +1,119 @@
 import Promise from 'bluebird';
-import { ServerResponse } from 'http';
+import FormData from 'form-data';
+import { IncomingMessage } from 'http';
 import https from 'https';
 import { stringify as stringifyObj } from 'querystring';
 import { parse as parseUrl } from 'url';
 
+interface IQueryParams {
+  [key: string]: any;
+}
+
+interface IHeaders {
+  [key: string]: any;
+}
+
+interface IRequestData {
+  [key: string]: any;
+}
+
+export interface IRequestOptions {
+  /**
+   * URL to request
+   */
+  url: string;
+  /**
+   * Request method name
+   * @default 'GET'
+   */
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  /**
+   * Query params
+   */
+  query?: IQueryParams;
+  /**
+   * Form data
+   */
+  form?: FormData;
+  /**
+   * Request data
+   */
+  data?: IRequestData;
+  /**
+   * List of headers
+   */
+  headers?: IHeaders;
+}
+
+export interface IResponse {
+  info: IncomingMessage;
+  body?: string;
+}
+
 /**
  * Make a request
- * @param {object} options Object with request properties
- * @param {string} options.url Request URL
- * @param {string} [options.method='GET'] Request method (GET, POST, etc.) 
- * @param {object} [options.query=null] Query params
- * @param {FormData} [options.form=null] Object with form-data params
- * @param {object} [options.data=null] Object with data params
- * @param {object} [options.headers=null] Object with headers properties
- * @param {boolean} [options.json=true] Parse response as JSON
- * @param {boolean} [options.fullResponse=false] Resolve with full response instead of data
+ * @param {object} options Object with request params
  * @return {Promise} Promise
  */
-const request: (options: IRequestOptions) => Promise<any> = ({
-  url,
-  method = 'GET',
-  query,
-  form,
-  data,
-  headers,
-  json = true,
-  fullResponse = false
-}) => new Promise((resolve, reject) => {
-  const req = https.request({
-    ...parseUrl(url + (query != null ? `?${stringifyObj(query)}` : '')),
-    method,
-    headers: Object.assign({}, headers, form != null ? {
-      'Content-Type': `multipart/form-data; boundary=${form.getBoundary()}`,
-      'Content-Length': form.getLengthSync()
-    } : null)
-  });
+export default function request(options: IRequestOptions): Promise<IResponse> {
+  const {
+    url,
+    method = 'GET',
+    query,
+    form,
+    data,
+    headers
+  } = options;
 
-  req.on('response', (res: ServerResponse) => {
-    let data = '';
+  const {
+    protocol,
+    host,
+    path
+  } = parseUrl(`${url}${query != null ? `?${stringifyObj(query)}` : ''}`);
 
-    res.on('data', (chunk: string) => data += chunk);
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      protocol,
+      host,
+      path,
+      method,
+      headers: Object.assign({}, headers, form != null ? {
+        'Content-Type': `multipart/form-data; boundary=${form.getBoundary()}`,
+        'Content-Length': form.getLengthSync()
+      } : null)
+    });
 
-    res.on('end', () => {
-      try {
-        const parsedData = json ? JSON.parse(data) : data;
+    req.on('response', (res: IncomingMessage) => {
+      let responseData = '';
 
-        if (res.statusCode >= 200 && res.statusCode < 400) { 
-          resolve(fullResponse ? res : parsedData);
+      res.on('data', (chunk: string) => responseData += chunk);
+
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 400) {
+          resolve({
+            info: res,
+            body: responseData
+          });
         } else {
-          const err = new Error(data);
+          const err = new Error(responseData);
           err.name = res.statusCode.toString();
           throw err;
         }
-      } catch (err) {
-        reject(err);
-      }
+      });
     });
-  });
 
-  req.on('error', (err) => {
-    reject(err);
-  });
+    req.on('error', (err: Error) => {
+      reject(err);
+    });
 
-  if (form === null) {
-    if (data !== null) {
-      req.write(stringifyObj(data));
+    if (form != null) {
+      form.pipe(req);
+    } else {
+      if (data != null) {
+        req.write(stringifyObj(data));
+      }
+
+      req.end();
     }
-
-    req.end();
-  } else {
-    form.pipe(req);
-  }
-});
+  });
+}
