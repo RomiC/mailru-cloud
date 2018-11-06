@@ -429,8 +429,8 @@ Getting info about space.
   "email": "roman.charugin@mail.ru",
   "body": {
     "overquota": false,
-    "used": 2031,
-    "total": 1048576
+    "bytes_used": 2031,
+    "bytes_total": 1048576
   },
   "time": 1492087195197,
   "status": 200

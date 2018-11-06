@@ -36,7 +36,7 @@ export interface IApiResponse<B = any> {
 export default function requestToApi<B>(
   auth: ICredentials,
   options: IRequestToApiOptions
-): Promise<B> {
+): Promise<IApiResponse<B>> {
   const {
     cookies,
     token
@@ -66,7 +66,7 @@ export default function requestToApi<B>(
     try {
       const parsedData: IApiResponse<B> = JSON.parse(body);
 
-      return parsedData.body;
+      return parsedData;
     } catch (err) {
       return err;
     }
