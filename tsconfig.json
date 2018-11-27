@@ -11,9 +11,11 @@
     "baseUrl": "."
   },
   "include": [
-    "src/*", "tests/request.spec.ts",
+    "src/*"
   ],
   "exclude": [
-    "node_modules/*"
+    "node_modules/*",
+    "tests/*",
+    "examples/*"
   ]
 }
