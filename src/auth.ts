@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import { IncomingHttpHeaders, IncomingMessage } from 'http';
 
 import filterIncomingCookies from './filter-incoming-cookies';
@@ -26,8 +25,8 @@ interface IAuthRequestContext {
  * @param domain User email's domain
  * @return Promise
  */
-function commonAuth(login: string, password: string, domain: string): Promise<IAuthRequestContext> {
-  return request({
+async function commonAuth(login: string, password: string, domain: string): Promise<IAuthRequestContext> {
+  const { info } = await request({
     url: AUTH_COMMON_URL,
     query: {
       lang: 'ru_RU',
@@ -39,15 +38,15 @@ function commonAuth(login: string, password: string, domain: string): Promise<IA
       Password: password,
       Domain: domain
     }
-  }).then(({ info }) => {
-    const cookies = info.headers['set-cookie'];
-
-    if (cookies != null && cookies.length > 0) {
-      return { cookies };
-    } else {
-      throw new Error('Wrong login or passwrod');
-    }
   });
+
+  const cookies = info.headers['set-cookie'];
+
+  if (!cookies || cookies.length === 0) {
+    throw new Error('Wrong login or passwrod');
+  }
+
+  return { cookies };
 }
 
 /**
@@ -55,8 +54,8 @@ function commonAuth(login: string, password: string, domain: string): Promise<IA
  * @param context Auth-process context
  * @return Promise
  */
-function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestContext> {
-  return request({
+async function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestContext> {
+  const { info } = await request({
     url: AUTH_SDC_REDIRECT_URL,
     query: {
       from: 'https://cloud.mail.ru/home/'
@@ -64,18 +63,18 @@ function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestContext> {
     headers: {
       Cookie: filterIncomingCookies(AUTH_SDC_REDIRECT_URL, context.cookies)
     }
-  }).then(({ info }) => {
-    const location = info.headers['location'];
-
-    if (info.statusCode === 302 && /token=[^\&]+/.test(location)) {
-      return {
-        ...context,
-        sdcUrl: location
-      };
-    } else {
-      throw new Error('Failed too get SDC-url');
-    }
   });
+
+  const location = info.headers['location'];
+
+  if (info.statusCode !== 302 || !/token=[^\&]+/.test(location)) {
+    throw new Error('Failed too get SDC-url');
+  }
+
+  return {
+    ...context,
+    sdcUrl: location
+  };
 }
 
 /**
@@ -83,40 +82,42 @@ function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestContext> {
  * @param context Auth-proccess context
  * @return Promise
  */
-function getSdcToken(context: IAuthRequestContext): Promise<IAuthRequestContext> {
-  return request({
+async function getSdcToken(context: IAuthRequestContext): Promise<IAuthRequestContext> {
+  const { info } = await request({
     url: context.sdcUrl,
     headers: {
       Cookie: filterIncomingCookies(context.sdcUrl, context.cookies)
     }
-  }).then(({ info }) => {
-    const cookies = info.headers['set-cookie'];
-
-    if (cookies != null && cookies.length > 0) {
-      return {
-        ...context,
-        cookies: [
-          ...context.cookies,
-          ...cookies
-        ]
-      };
-    } else {
-      throw new Error('Failed to get sdc-token');
-    }
   });
+
+  const cookies = info.headers['set-cookie'];
+
+  if (!cookies || cookies.length === 0) {
+    throw new Error('Failed to get sdc-token');
+  }
+
+  return {
+    ...context,
+    cookies: [
+      ...context.cookies,
+      ...cookies
+    ]
+  };
 }
 
 /**
  * Obtain CSRF-token
  * @param context Auth-proccess context
  */
-function getCsrfToken(context: IAuthRequestContext): Promise<IAuthRequestContext> {
-  return csrf({
+async function getCsrfToken(context: IAuthRequestContext): Promise<IAuthRequestContext> {
+  const { token } = await csrf({
     cookies: filterIncomingCookies(API_BASE, context.cookies)
-  }).then((res) => ({
+  });
+
+  return {
     ...context,
-    token: res.token
-  }));
+    token
+  };
 }
 
 /**
@@ -126,13 +127,14 @@ function getCsrfToken(context: IAuthRequestContext): Promise<IAuthRequestContext
  * @param domain User's mail domain (mail.ru, bk.ru, etc.)
  * @return Promise
  */
-export default function auth(login: string, password: string, domain: string): Promise<ICredentials> {
-  return commonAuth(login, password, domain)
+export default async function auth(login: string, password: string, domain: string): Promise<ICredentials> {
+  const context = await commonAuth(login, password, domain)
     .then(getSdcUrl)
     .then(getSdcToken)
-    .then(getCsrfToken)
-    .then((context) => ({
-      cookies: filterIncomingCookies(API_BASE, context.cookies),
-      token: context.token
-    }));
+    .then(getCsrfToken);
+
+  return {
+    cookies: filterIncomingCookies(API_BASE, context.cookies),
+    token: context.token
+  };
 }

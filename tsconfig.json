@@ -11,7 +11,7 @@
     "baseUrl": "."
   },
   "include": [
-    "src/*",
+    "src/*", "tests/request.spec.ts",
   ],
   "exclude": [
     "node_modules/*"

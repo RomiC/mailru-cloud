@@ -1,5 +1,3 @@
-import Promise from 'bluebird';
-
 import request, { IRequestOptions } from './request';
 
 import { USER_AGENT } from './constants';
@@ -33,7 +31,7 @@ export interface IApiResponse<B = any> {
  * @param options Other request options
  * @return Promise
  */
-export default function requestToApi<B>(
+export default async function requestToApi<B>(
   auth: ICredentials,
   options: IRequestToApiOptions
 ): Promise<IApiResponse<B>> {
@@ -49,26 +47,26 @@ export default function requestToApi<B>(
     data
   } = options;
 
-  return request({
-    url,
-    method,
-    query: {
-      ...query,
-      ...(token ? { token } : {})
-    } ,
-    form,
-    data,
-    headers: {
-      'Cookie': cookies,
-      'User-Agent': USER_AGENT
-    }
-  }).then(({ info, body }) => {
-    try {
-      const parsedData: IApiResponse<B> = JSON.parse(body);
+  try {
+    const { body } = await request({
+      url,
+      method,
+      query: {
+        ...query,
+        ...(token ? { token } : {})
+      } ,
+      form,
+      data,
+      headers: {
+        'Cookie': cookies,
+        'User-Agent': USER_AGENT
+      }
+    });
 
-      return parsedData;
-    } catch (err) {
-      return err;
-    }
-  });
+    const parsedData: IApiResponse<B> = JSON.parse(body);
+
+    return parsedData;
+  } catch (err) {
+    return err;
+  }
 }

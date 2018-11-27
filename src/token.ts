@@ -1,5 +1,3 @@
-import Promise from 'bluebird';
-
 import requestToApi, { IApiResponse } from './request-to-api';
 
 import { API_TOKENS_CSRF } from './constants';
@@ -18,9 +16,11 @@ interface ICsrfResponse {
  * @param auth Object with auth-properties
  * @return Promise
  */
-export function csrf(auth: ICredentials): Promise<ICsrfResponse> {
-  return requestToApi<ICsrfResponse>(auth, {
+export async function csrf(auth: ICredentials): Promise<ICsrfResponse> {
+  const { body } = await requestToApi<ICsrfResponse>(auth, {
     url: API_TOKENS_CSRF,
     method: 'POST'
-  }).then(({ body }) => body);
+  });
+
+  return body;
 }

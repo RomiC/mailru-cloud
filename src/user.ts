@@ -1,5 +1,4 @@
-import Promise from 'bluebird';
-import requestToApi, { IApiResponse } from './request-to-api';
+import requestToApi from './request-to-api';
 
 import { API_USER_SPACE } from './constants';
 
@@ -20,8 +19,10 @@ interface ISpaceResponse {
   bytes_total: number;
 }
 
-export function space(auth: ICredentials): Promise<ISpaceResponse> {
-  return requestToApi<ISpaceResponse>(auth, {
+export async function space(auth: ICredentials): Promise<ISpaceResponse> {
+  const { body } = await requestToApi<ISpaceResponse>(auth, {
     url: API_USER_SPACE
-  }).then(({ body }) => body);
+  });
+
+  return body;
 }

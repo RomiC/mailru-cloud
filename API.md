@@ -94,7 +94,8 @@ Get dipatcher info. Collection of properties including links for upload and down
 		"weblink_thumbnails": [{"count": "50", "url": "https://cloclo3.datacloudmail.ru/weblink/thumb/"}],
 		"auth": [{"count": "500", "url": "https://swa.mail.ru/cgi-bin/auth"}],
 		"view": [{"count": "250", "url": "https://cloclo2.datacloudmail.ru/view/"}],
-		"get": [{"count": "100", "url": "https://cloclo27.datacloudmail.ru/get/"}],
+    "get": [{"count": "100", "url": "https://cloclo27.datacloudmail.ru/get/"}],
+    "stock": [{"count": "100", "url": "https://cloclo27.datacloudmail.ru/stock/"}]
 		"upload": [{"count": "25", "url": "https://cloclo22-upload.cloud.mail.ru/upload/"}],
 		"thumbnails": [{"count": "250", "url": "https://cloclo3.cloud.mail.ru/thumb/"}]
 	},

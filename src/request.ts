@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import FormData from 'form-data';
 import { IncomingMessage } from 'http';
 import https from 'https';
@@ -55,7 +54,7 @@ export interface IResponse {
  * @param {object} options Object with request params
  * @return {Promise} Promise
  */
-export default function request(options: IRequestOptions): Promise<IResponse> {
+export default async function request(options: IRequestOptions): Promise<IResponse> {
   const {
     url,
     method = 'GET',
@@ -71,16 +70,19 @@ export default function request(options: IRequestOptions): Promise<IResponse> {
     path
   } = parseUrl(`${url}${query != null ? `?${stringifyObj(query)}` : ''}`);
 
-  return new Promise((resolve, reject) => {
+  return new Promise<IResponse>((resolve, reject) => {
     const req = https.request({
       protocol,
       host,
       path,
       method,
-      headers: Object.assign({}, headers, form != null ? {
-        'Content-Type': `multipart/form-data; boundary=${form.getBoundary()}`,
-        'Content-Length': form.getLengthSync()
-      } : null)
+      headers: {
+        ...headers,
+        ...(form != null ? {
+          'Content-Type': `multipart/form-data; boundary=${form.getBoundary()}`,
+          'Content-Length': form.getLengthSync()
+        } : {})
+      }
     });
 
     req.on('response', (res: IncomingMessage) => {

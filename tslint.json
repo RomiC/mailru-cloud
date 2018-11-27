@@ -57,5 +57,7 @@
       "options": {"multiline": "never", "singleline": "never"}
     }
   },
-  "rulesDirectory": []
+  "rulesDirectory": [
+    "node_modules/tslint-eslint-rules/dist/rules"
+  ]
 }
