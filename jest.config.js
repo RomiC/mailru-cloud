@@ -7,5 +7,9 @@ module.exports = {
   ],
   coverageReporters: [
     "lcov"
+  ],
+  roots: [
+    "<rootDir>/src/",
+    "<rootDir>/tests/"
   ]
 };
