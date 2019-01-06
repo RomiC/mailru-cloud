@@ -4,6 +4,10 @@ import request, { IRequestOptions } from '../src/request';
 
 jest.mock('https');
 
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 test('should call https.request with correct default params', () => {
   const options: IRequestOptions = {
     url: 'https://mail.ru'
@@ -50,9 +54,7 @@ test('should call https.request with data', () => {
       header2: 'val2'
     }
   });
-  expect(https.request({}).write).toHaveBeenCalledWith(
-    'dataParam1=val1&dataParam2=val2'
-  );
+  expect(https.request(null).write).toHaveBeenCalledWith('dataParam1=val1&dataParam2=val2');
 });
 
 test('should call https.request with form data params', () => {
@@ -80,9 +82,9 @@ test('should call https.request with form data params', () => {
     path: '/?queryParam1=val1&queryParam2=val2',
     method: 'POST',
     headers: {
-      "header1": 'val1',
-      "header2": 'val2',
-      'Content-Type': `multipart/form-data; boundary=mock-boundary`,
+      'header1': 'val1',
+      'header2': 'val2',
+      'Content-Type': 'multipart/form-data; boundary=mock-boundary',
       'Content-Length': 666
     }
   });
