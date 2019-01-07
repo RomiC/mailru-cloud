@@ -1,6 +1,7 @@
 import FormData from 'form-data';
 import https from 'https';
 import request, { IRequestOptions } from '../src/request';
+import { Writable } from 'stream';
 
 jest.mock('https');
 
@@ -89,4 +90,59 @@ test('should call https.request with form data params', () => {
     }
   });
   expect(form.pipe).toHaveBeenCalledWith(expect.any(Object));
+});
+
+test('should resolve promise with response', () => {
+  const clientRequestMock = https.request(null);
+  const options: IRequestOptions = {
+    url: 'https://mail.ru'
+  };
+  const response: any = new Writable();
+  response['statusCode'] = 200;
+
+  const requestPromise = request(options);
+
+  clientRequestMock.emit('response', response);
+
+  response.emit('data', 'OK!');
+  response.emit('end');
+
+  return expect(requestPromise).resolves.toEqual({
+    info: response,
+    body: 'OK!'
+  });
+});
+
+it('should reject promise with error for responses with bad status', () => {
+  const clientRequestMock = https.request(null);
+  const options: IRequestOptions = {
+    url: 'https://mail.ru'
+  };
+  const response: any = new Writable();
+  response['statusCode'] = 404;
+  const err = new Error('NOT FOUND!');
+  err.name = '404';
+
+  const requestPromise = request(options);
+
+  clientRequestMock.emit('response', response);
+
+  response.emit('data', 'NOT FOUND!');
+  response.emit('end');
+
+  return expect(requestPromise).rejects.toEqual(err);
+});
+
+it('should reject promise with error in case of issue during request', () => {
+  const clientRequestMock = https.request(null);
+  const options: IRequestOptions = {
+    url: 'https://mail.ru'
+  };
+  const err = new Error('Couldn\'t connect to host!');
+
+  const requestPromise = request(options);
+
+  clientRequestMock.emit('error', err);
+
+  return expect(requestPromise).rejects.toEqual(err);
 });

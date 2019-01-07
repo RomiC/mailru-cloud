@@ -99,7 +99,7 @@ export default async function request(options: IRequestOptions): Promise<IRespon
         } else {
           const err = new Error(responseData);
           err.name = res.statusCode.toString();
-          throw err;
+          reject(err);
         }
       });
     });

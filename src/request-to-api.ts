@@ -54,7 +54,7 @@ export default async function requestToApi<B>(
       query: {
         ...query,
         ...(token ? { token } : {})
-      } ,
+      },
       form,
       data,
       headers: {
@@ -67,6 +67,6 @@ export default async function requestToApi<B>(
 
     return parsedData;
   } catch (err) {
-    return err;
+    throw err;
   }
 }
