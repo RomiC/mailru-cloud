@@ -1,7 +1,7 @@
 import FormData from 'form-data';
 import { ICredentials } from '../src/@types/index';
 import { USER_AGENT } from '../src/constants';
-import request, { resolveRequestPromise, rejectRequestPromise } from '../src/request';
+import request, { rejectRequestPromise, resolveRequestPromise } from '../src/request';
 import requestToApi from '../src/request-to-api';
 
 jest.mock('../src/request');

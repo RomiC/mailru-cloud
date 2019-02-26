@@ -1,17 +1,21 @@
 {
   "defaultSeverity": "error",
   "extends": [
-      "tslint:recommended"
+    "tslint:recommended"
   ],
   "rules": {
     "comment-format": {
-      "options": ["check-space"],
+      "options": [
+        "check-space"
+      ],
       "severity": "warning"
     },
     "eofline": false,
     "interface-name": false,
     "max-line-length": {
-      "options": [120]
+      "options": [
+        120
+      ]
     },
     "member-access": false,
     "no-reference": false,
@@ -21,11 +25,15 @@
       "severity": "warning"
     },
     "no-multi-spaces": {
-      "options": [true],
+      "options": [
+        true
+      ],
       "severity": "warning"
     },
     "object-curly-spacing": {
-      "options": ["always"],
+      "options": [
+        "always"
+      ],
       "severity": "warning"
     },
     "object-literal-key-quotes": {
@@ -34,27 +42,51 @@
     },
     "object-literal-sort-keys": false,
     "quotemark": {
-      "options": ["single", "jsx-double", "avoid-escape"],
+      "options": [
+        "single",
+        "jsx-double",
+        "avoid-escape"
+      ],
       "severity": "warning"
     },
     "semicolon": {
-      "options": ["always", "ignore-interfaces"],
+      "options": [
+        "always",
+        "ignore-interfaces"
+      ],
       "severity": "warning"
     },
     "space-in-parens": {
-      "options": ["never"],
+      "options": [
+        "never"
+      ],
       "severity": "warning"
     },
     "ter-arrow-parens": {
-      "options": ["always"],
+      "options": [
+        "always"
+      ],
       "severity": "warning"
     },
     "ter-indent": {
-      "options": [2, {"SwitchCase": 1}],
+      "options": [
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
       "severity": "warning"
     },
     "trailing-comma": {
-      "options": {"multiline": "never", "singleline": "never"}
+      "options": {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    },
+    "variable-name": {
+      "options": [
+        "allow-leading-underscore"
+      ]
     }
   },
   "rulesDirectory": [
