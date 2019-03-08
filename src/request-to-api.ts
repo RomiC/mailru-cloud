@@ -67,6 +67,6 @@ export default async function requestToApi<B>(
 
     return parsedData;
   } catch (err) {
-    throw err;
+    return Promise.reject(err);
   }
 }

@@ -1,10 +1,8 @@
-import createPromiseMock from '../../tests/utils/createPromiseMock';
+export let resolveRequestPromise: (reason: any) => void = null;
+export let rejectRequestPromise: (data: any) => void = null;
+const _init = jest.fn(() => new Promise((res, rej) => {
+  resolveRequestPromise = res;
+  rejectRequestPromise = rej;
+}));
 
-export const {
-  default: request,
-  resolvePromise: resolveRequestPromise,
-  rejectPromise: rejectRequestPromise,
-  getPromise: getRequestPromise
-} = createPromiseMock();
-
-export default request;
+export default jest.fn(_init);
