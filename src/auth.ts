@@ -43,7 +43,7 @@ async function commonAuth(login: string, password: string, domain: string): Prom
   const cookies = info.headers['set-cookie'];
 
   if (!cookies || cookies.length === 0) {
-    throw new Error('Wrong login or passwrod');
+    throw new Error('Wrong login or password');
   }
 
   return { cookies };
@@ -68,7 +68,7 @@ async function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestCont
   const location = info.headers['location'];
 
   if (info.statusCode !== 302 || !/token=[^\&]+/.test(location)) {
-    throw new Error('Failed too get SDC-url');
+    throw new Error('Failed to get SDC-url');
   }
 
   return {
@@ -113,6 +113,10 @@ async function getCsrfToken(context: IAuthRequestContext): Promise<IAuthRequestC
   const { token } = await csrf({
     cookies: filterIncomingCookies(API_BASE, context.cookies)
   });
+
+  if (!token) {
+    throw new Error('Failed to get CSRF-token');
+  }
 
   return {
     ...context,
