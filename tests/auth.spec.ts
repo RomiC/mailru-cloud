@@ -2,7 +2,7 @@ import { promisify } from 'util';
 import auth from '../src/auth';
 import { API_BASE, AUTH_COMMON_URL, AUTH_SDC_REDIRECT_URL } from '../src/constants';
 import filterIncomingCookies from '../src/filter-incoming-cookies';
-import request, { getRequestPromise, rejectRequestPromise, resolveRequestPromise } from '../src/request';
+import request, { rejectRequestPromise, resolveRequestPromise } from '../src/request';
 import { csrf, rejectCsrfPromise, resolveCsrfPromise } from '../src/token';
 
 jest.mock('../src/request');
