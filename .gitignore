@@ -40,3 +40,4 @@ examples/credentials.js
 examples/credentials.ts
 
 dist
+.env
