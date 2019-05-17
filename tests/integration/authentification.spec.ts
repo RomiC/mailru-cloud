@@ -14,7 +14,6 @@ test('should throw an error in case of wrong login or password', () => {
 });
 
 test('should authentificate user with valid login and password', () => {
-  console.log(MAILRU_LOGIN);
   return auth(MAILRU_LOGIN, MAILRU_PASSWORD, MAILRU_DOMAIN).then((res) => {
     expect(res.cookies).toBeDefined();
     expect(res.cookies.length).toBeGreaterThan(0);
