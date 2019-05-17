@@ -8,7 +8,7 @@
     "start": "ts-node --files -P ./tsconfig.json",
     "lint": "tslint -c tslint.json 'src/*.ts'",
     "test": "jest --no-cache --testPathIgnorePatterns='<rootDir>/tests/integration/'",
-    "test:intergration": "jest --no-coverage --testPathPattern='tests/integration/'",
+    "test:integration": "jest --no-coverage --testPathPattern='tests/integration/'",
     "coverage": "codecov --clear --token=bae63dcc-3200-452b-9ba9-587255f61997"
   },
   "repository": {
