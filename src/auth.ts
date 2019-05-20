@@ -41,7 +41,6 @@ async function commonAuth(login: string, password: string, domain: string): Prom
   });
 
   const cookies = info.headers['set-cookie'];
-  console.log(cookies);
 
   if (!cookies || cookies.length === 0) {
     throw new Error('Wrong login or password');
@@ -69,7 +68,6 @@ async function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestCont
   const location = info.headers['location'];
 
   if (info.statusCode !== 302 || !/token=[^\&]+/.test(location)) {
-    console.log(info.statusCode, info.headers);
     throw new Error('Failed to get SDC-url');
   }
 
