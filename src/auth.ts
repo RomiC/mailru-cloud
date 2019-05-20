@@ -68,7 +68,7 @@ async function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestCont
   const location = info.headers['location'];
 
   if (info.statusCode !== 302 || !/token=[^\&]+/.test(location)) {
-    console.log(info);
+    console.log(info.statusCode, info.headers);
     throw new Error('Failed to get SDC-url');
   }
 
