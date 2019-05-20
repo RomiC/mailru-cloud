@@ -11,5 +11,4 @@ steps:
       from_secret: MAILRU_PASSWORD
   commands:
   - npm install
-  - npm test
   - npm run test:integration

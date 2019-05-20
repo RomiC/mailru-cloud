@@ -41,6 +41,7 @@ async function commonAuth(login: string, password: string, domain: string): Prom
   });
 
   const cookies = info.headers['set-cookie'];
+  console.log(cookies);
 
   if (!cookies || cookies.length === 0) {
     throw new Error('Wrong login or password');
