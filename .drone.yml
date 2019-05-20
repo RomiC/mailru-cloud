@@ -4,6 +4,12 @@ name: default
 steps:
 - name: test
   image: node
+  environment:
+    MAILRU_LOGIN:
+      from_secret: MAILRU_LOGIN
+    MAILRU_PASSWORD:
+      from_secret: MAILRU_PASSWORD
   commands:
   - npm install
   - npm test
+  - npm test:integration
