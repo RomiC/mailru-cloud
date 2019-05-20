@@ -12,4 +12,4 @@ steps:
   commands:
   - npm install
   - npm test
-  - npm test:integration
+  - npm run test:integration
