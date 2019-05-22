@@ -3,7 +3,16 @@ import { IncomingHttpHeaders, IncomingMessage } from 'http';
 import filterIncomingCookies from './filter-incoming-cookies';
 import request from './request';
 
-import { ICredentials } from './@types';
+export interface ICredentials {
+  /**
+   * List of necessary cookies
+   */
+  cookies: string;
+  /**
+   * CSRF-token
+   */
+  token?: string
+}
 
 import {
   API_BASE,

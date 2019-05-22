@@ -2,7 +2,7 @@ import requestToApi from './request-to-api';
 
 import { API_USER_SPACE } from './constants';
 
-import { ICredentials } from './@types';
+import { ICredentials } from './auth';
 
 interface ISpaceResponse {
   /**

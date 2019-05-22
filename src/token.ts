@@ -2,7 +2,7 @@ import requestToApi, { IApiResponse } from './request-to-api';
 
 import { API_TOKENS_CSRF } from './constants';
 
-import { ICredentials } from './@types';
+import { ICredentials } from './auth';
 
 interface ICsrfResponse {
   /**

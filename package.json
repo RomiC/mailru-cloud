@@ -2,7 +2,7 @@
   "name": "mailru-cloud",
   "version": "1.0.0-alpha.0",
   "description": "NodeJS client for Mail.ru Cloud service",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p .",
     "start": "ts-node --files -P ./tsconfig.json",

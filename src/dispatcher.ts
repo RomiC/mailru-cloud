@@ -2,7 +2,7 @@ import requestToApi from './request-to-api';
 
 import { API_DISPATCHER } from './constants';
 
-import { ICredentials } from './@types';
+import { ICredentials } from './auth';
 
 interface IEndpoint {
   /**
@@ -67,7 +67,7 @@ interface IDispatcherResponse {
  * @param auth Object with auth-properties
  * @return Promise
  */
-export async function dispatcher(auth: ICredentials): Promise<IDispatcherResponse> {
+export default async function dispatcher(auth: ICredentials): Promise<IDispatcherResponse> {
   const { body } = await requestToApi<IDispatcherResponse>(auth, {
     url: API_DISPATCHER
   });

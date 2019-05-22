@@ -2,9 +2,12 @@ import request, { IRequestOptions } from './request';
 
 import { USER_AGENT } from './constants';
 
-import { ICredentials } from './@types';
+import { ICredentials } from './auth';
 
-export type IRequestToApiOptions = Pick<IRequestOptions, 'url' | 'method' | 'query' | 'form' | 'data'>;
+export type IRequestToApiOptions = Pick<
+  IRequestOptions,
+  'url' | 'method' | 'query' | 'form' | 'data'
+> & { json?: boolean };
 
 export interface IApiResponse<B = any> {
   /**
@@ -44,7 +47,8 @@ export default async function requestToApi<B>(
     method = 'GET',
     query = {},
     form,
-    data
+    data,
+    json = true
   } = options;
 
   try {
@@ -63,9 +67,13 @@ export default async function requestToApi<B>(
       }
     });
 
-    const parsedData: IApiResponse<B> = JSON.parse(body);
+    if (json === true) {
+      const parsedData: IApiResponse<B> = JSON.parse(body);
 
-    return parsedData;
+      return parsedData;
+    } else {
+      return body;
+    }
   } catch (err) {
     return Promise.reject(err);
   }
