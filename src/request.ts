@@ -2,6 +2,7 @@ import FormData from 'form-data';
 import { IncomingMessage } from 'http';
 import https from 'https';
 import { stringify as stringifyObj } from 'querystring';
+import { Stream } from 'stream';
 import { parse as parseUrl } from 'url';
 
 interface IQueryParams {
@@ -37,7 +38,7 @@ export interface IRequestOptions {
   /**
    * Request data
    */
-  data?: IRequestData;
+  data?: IRequestData | Stream;
   /**
    * List of headers
    */
@@ -112,10 +113,14 @@ export default async function request(options: IRequestOptions): Promise<IRespon
       form.pipe(req);
     } else {
       if (data != null) {
-        req.write(stringifyObj(data));
+        if (data instanceof Stream) {
+          data.pipe(req);
+        } else {
+          req.end(stringifyObj(data));
+        }
+      } else {
+        req.end();
       }
-
-      req.end();
     }
   });
 }

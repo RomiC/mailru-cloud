@@ -5,6 +5,10 @@ import request from './request';
 
 export interface ICredentials {
   /**
+   * User email
+   */
+  email?: string;
+  /**
    * List of necessary cookies
    */
   cookies: string;
@@ -22,6 +26,7 @@ import {
 import { csrf } from './token';
 
 interface IAuthRequestContext {
+  email?: string;
   cookies?: IncomingHttpHeaders['set-cookie'];
   sdcUrl?: string;
   token?: string;
@@ -55,7 +60,10 @@ async function commonAuth(login: string, password: string, domain: string): Prom
     throw new Error('Wrong login or password');
   }
 
-  return { cookies };
+  return {
+    email: `${login}@${domain}`,
+    cookies
+  };
 }
 
 /**
@@ -147,6 +155,7 @@ export default async function auth(login: string, password: string, domain: stri
     .then(getCsrfToken);
 
   return {
+    email: context.email,
     cookies: filterIncomingCookies(API_BASE, context.cookies),
     token: context.token
   };

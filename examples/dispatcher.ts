@@ -1,5 +1,5 @@
 import auth from '../src/auth';
-import { dispatcher } from '../src/dispatcher';
+import dispatcher from '../src/dispatcher';
 
 import { DOMAIN, LOGIN, PASSWORD } from './credentials';
 

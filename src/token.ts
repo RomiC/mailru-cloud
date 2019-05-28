@@ -1,10 +1,10 @@
-import requestToApi, { IApiResponse } from './request-to-api';
+import requestToApi, { IApiDataResponse } from './request-to-api';
 
 import { API_TOKENS_CSRF } from './constants';
 
 import { ICredentials } from './auth';
 
-interface ICsrfResponse {
+interface ICsrfData {
   /**
    * CSRF-token
    */
@@ -16,11 +16,11 @@ interface ICsrfResponse {
  * @param auth Object with auth-properties
  * @return Promise
  */
-export async function csrf(auth: ICredentials): Promise<ICsrfResponse> {
-  const { body } = await requestToApi<ICsrfResponse>(auth, {
+export async function csrf(auth: ICredentials): Promise<ICsrfData> {
+  const { body } = await requestToApi<ICsrfData>(auth, {
     url: API_TOKENS_CSRF,
     method: 'POST'
-  });
+  }) as IApiDataResponse<ICsrfData>;
 
   return body;
 }

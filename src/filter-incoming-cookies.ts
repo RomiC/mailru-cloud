@@ -30,9 +30,9 @@ export default function filterIncomingCookies(
 
   return cookies
     .reduce((res, cookie) => {
-      const [ nameValue, ...metaList ] = cookie.split(';');
+      const [nameValue, ...metaList] = cookie.split(';');
       const metaMap = metaList.reduce((r, meta) => {
-        const [ name, value ] = meta.split('=');
+        const [name, value] = meta.split('=');
 
         r[name.trim().toLowerCase()] = value || true;
 

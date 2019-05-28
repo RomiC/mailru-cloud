@@ -9,7 +9,7 @@ export type IRequestToApiOptions = Pick<
   'url' | 'method' | 'query' | 'form' | 'data'
 > & { json?: boolean };
 
-export interface IApiResponse<B = any> {
+export interface IApiDataResponse<B> {
   /**
    * Current user email
    */
@@ -27,6 +27,8 @@ export interface IApiResponse<B = any> {
    */
   status: number;
 }
+
+export type IApiResponse<B> = IApiDataResponse<B> | string;
 
 /**
  * Make a certain request to the API

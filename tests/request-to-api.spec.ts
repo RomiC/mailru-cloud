@@ -1,5 +1,5 @@
 import FormData from 'form-data';
-import { ICredentials } from '../src/@types/index';
+import { ICredentials } from '../src/auth';
 import { USER_AGENT } from '../src/constants';
 import request, { rejectRequestPromise, resolveRequestPromise } from '../src/request';
 import requestToApi from '../src/request-to-api';

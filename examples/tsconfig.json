@@ -8,15 +8,11 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "typeRoots": [
-      "../src/@types",
-      "../node_modules/@types"
-    ]
+    "baseUrl": "."
   },
   "include": [
-    "../src/@types/index.d.ts",
     "../src/*",
-    "./*", "../tests/request.spec.ts"
+    "./*",
+    "../tests/request.spec.ts"
   ]
 }

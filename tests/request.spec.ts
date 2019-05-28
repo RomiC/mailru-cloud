@@ -1,7 +1,7 @@
 import FormData from 'form-data';
 import https from 'https';
-import request, { IRequestOptions } from '../src/request';
 import { Writable } from 'stream';
+import request, { IRequestOptions } from '../src/request';
 
 jest.mock('https');
 
@@ -55,7 +55,7 @@ test('should call https.request with data', () => {
       header2: 'val2'
     }
   });
-  expect(https.request(null).write).toHaveBeenCalledWith('dataParam1=val1&dataParam2=val2');
+  expect(https.request(null).end).toHaveBeenCalledWith('dataParam1=val1&dataParam2=val2');
 });
 
 test('should call https.request with form data params', () => {

@@ -31,11 +31,11 @@ const commonAuthResponse = {
     headers: {
       'set-cookie': [
         // tslint:disable: max-line-length
-        'GarageID=0000000000000000000000000000; expires=Tue, 25 Feb 2020 13:24:04 GMT; path=/; domain=.auth.mail.ru; Secure; HttpOnly',
-        'Mpop=1551101044:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:roman.charugin@mail.ru:; expires=Sun, 26 May 2019 13:24:04 GMT; path=/; domain=.mail.ru',
-        'ssdc=5d8e447c3aa546aae06edb49eb237; expires=Sun, 26 May 2019 13:24:04 GMT; path=/; domain=.auth.mail.ru; Secure; HttpOnly',
-        'ssdc_info=5d8e:0:00000000; expires=Sun, 26 May 2019 13:24:04 GMT; path=/; domain=.auth.mail.ru; HttpOnly',
-        't=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000; expires=Sat, 24 Aug 2019 13:24:04 GMT; path=/; domain=.mail.ru'
+        'GarageID=0000000000000000000000000000; expires=Tue, 25 Feb 2120 13:24:04 GMT; path=/; domain=.auth.mail.ru; Secure; HttpOnly',
+        'Mpop=1551101044:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:roman.charugin@mail.ru:; expires=Sun, 26 May 2119 13:24:04 GMT; path=/; domain=.mail.ru',
+        'ssdc=5d8e447c3aa546aae06edb49eb237; expires=Sun, 26 May 2119 13:24:04 GMT; path=/; domain=.auth.mail.ru; Secure; HttpOnly',
+        'ssdc_info=5d8e:0:00000000; expires=Sun, 26 May 2119 13:24:04 GMT; path=/; domain=.auth.mail.ru; HttpOnly',
+        't=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000; expires=Sat, 24 Aug 2119 13:24:04 GMT; path=/; domain=.mail.ru'
         // tslint:enable: max-line-length
       ]
     }
@@ -54,7 +54,7 @@ const getSdcTokenResponse = {
     headers: {
       'set-cookie': [
         // tslint:disable-next-line: max-line-length
-        'sdcs=0000000000000000; expires=Sun, 26 May 2019 14:45:45 GMT; path=/; domain=.cloud.mail.ru; Secure; HttpOnly'
+        'sdcs=0000000000000000; expires=Sun, 26 May 2119 14:45:45 GMT; path=/; domain=.cloud.mail.ru; Secure; HttpOnly'
       ]
     }
   }
@@ -129,7 +129,8 @@ it('should return credentials for correct login and password', () => {
       expect(res).toEqual({
         // tslint:disable-next-line: max-line-length
         cookies: 'Mpop=1551101044:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:roman.charugin@mail.ru:;t=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000;sdcs=0000000000000000',
-        token: getCsrfTokenResponse.token
+        token: getCsrfTokenResponse.token,
+        email: 'correctLogin@correctDomain'
       });
     });
 });

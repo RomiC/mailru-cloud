@@ -151,18 +151,14 @@ Get dipatcher info. Collection of properties including links for upload and down
 (supposed) Getting info about file uploading options
 
 
-### `POST https://%server_name%.cloud.mail.ru/upload`
+### `PUT https://%server_name%.cloud.mail.ru/upload`
 
-Uploading file to cloud. Require `Mpop`-cookie plus valid `User-Agent` header. `Content-Type` should be `multipart/form-data` with specified boundary value. You must also send `Content-Length` header with correct total amount of data in Bytes.
-
-#### Form data boundaries
-
-* **file** - Uploaded file; should also have `filename` param with the file name
+Uploading file to cloud. Require `Mpop`-cookie plus valid `X-Requested-With` header with value `'XMLHttpRequest'`. You must also send `Content-Length` header with correct total amount of data in Bytes. File should be sent as raw data.
 
 #### Response
 
 ```
-3C194D206659B0678EDF17E21050BF82B277BCFC;5809
+3C194D206659B0678EDF17E21050BF82B277BCFC
 ```
 
 ### `POST https://%server_name%.cloud.mail.ru/refrsh`
@@ -175,10 +171,14 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 
 #### Form data
 
-* **home** (`//javascript9.ics`) - path to save the file
+* **home** (`/javascript9.ics`) - path to save the file
 * **hash** (`3C194D206659B0678EDF17E21050BF82B277BCFC`) - file hash
 * **size** (`5809`) - file size
-* **conflict** (`rename`) - (supposed) strategy name in case of file is already exists
+* **conflict** (`rename`) - (supposed) strategy name in case of file is already exists:
+  * `'strict'` – (supposed) wait for user response
+  * `'rename'` - (supposed) automatically rename
+  * `'rewrite'` - (supposed) automatically rewrite existing file
+  * `'ignore'` - (supposed) skip uploaded file (not implemented yet)
 
 #### Response
 ```json

@@ -1,10 +1,10 @@
-import requestToApi from './request-to-api';
+import requestToApi, { IApiDataResponse } from './request-to-api';
 
 import { API_USER_SPACE } from './constants';
 
 import { ICredentials } from './auth';
 
-interface ISpaceResponse {
+interface ISpaceData {
   /**
    * (supposed) Is space exceeded
    */
@@ -19,10 +19,10 @@ interface ISpaceResponse {
   bytes_total: number;
 }
 
-export async function space(auth: ICredentials): Promise<ISpaceResponse> {
-  const { body } = await requestToApi<ISpaceResponse>(auth, {
+export async function space(auth: ICredentials): Promise<ISpaceData> {
+  const { body } = await requestToApi<ISpaceData>(auth, {
     url: API_USER_SPACE
-  });
+  }) as IApiDataResponse<ISpaceData>;
 
   return body;
 }

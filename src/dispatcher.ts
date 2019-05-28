@@ -1,4 +1,4 @@
-import requestToApi from './request-to-api';
+import requestToApi, { IApiDataResponse } from './request-to-api';
 
 import { API_DISPATCHER } from './constants';
 
@@ -15,7 +15,7 @@ interface IEndpoint {
   url: string;
 }
 
-interface IDispatcherResponse {
+interface IDispatcherData {
   /**
    * (supposed) Video streaming endpoints
    */
@@ -67,10 +67,10 @@ interface IDispatcherResponse {
  * @param auth Object with auth-properties
  * @return Promise
  */
-export default async function dispatcher(auth: ICredentials): Promise<IDispatcherResponse> {
-  const { body } = await requestToApi<IDispatcherResponse>(auth, {
+export default async function dispatcher(auth: ICredentials): Promise<IDispatcherData> {
+  const { body } = await requestToApi<IDispatcherData>(auth, {
     url: API_DISPATCHER
-  });
+  }) as IApiDataResponse<IDispatcherData>;
 
   return body;
 }

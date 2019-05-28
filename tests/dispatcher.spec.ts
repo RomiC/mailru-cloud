@@ -1,5 +1,5 @@
 import { API_DISPATCHER } from '../src/constants';
-import { dispatcher } from '../src/dispatcher';
+import dispatcher from '../src/dispatcher';
 import requestToApi, { resolveRequestToApiPromise } from '../src/request-to-api';
 
 jest.mock('../src/request-to-api');
