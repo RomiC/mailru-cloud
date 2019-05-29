@@ -1,13 +1,13 @@
 import fs from 'fs';
 
 import { ICredentials } from './auth';
+import { API_FILE, API_FILE_ADD } from './constants';
 import dispatcher from './dispatcher';
 import request from './request';
-import requestToApi, { IApiDataResponse, IApiResponse } from './request-to-api';
+import requestToApi, { IApiDataResponse } from './request-to-api';
 
-import { API_FILE_ADD } from './constants';
 
-interface IUploadData {
+export interface IUploadData {
   /**
    * Uploaded file hash
    */
@@ -23,6 +23,56 @@ interface IUploadData {
  */
 type IAddData = string;
 
+export interface IInfoData {
+  /**
+   * Absolute path to the source
+   */
+  home: string;
+  /**
+   * (supposed) Source kind (file or folder)
+   */
+  kind: 'folder' | 'file';
+  /**
+   * (supposed) Source type
+   */
+  type: 'folder' | 'file'
+  /**
+   * File hash (only for files)
+   */
+  hash?: string;
+  /**
+   * File passed the virus scan
+   */
+  virus_scan?: 'pass';
+  /**
+   * Size of the file in bytes
+   */
+  size?: number;
+  /**
+   * Date of modification (Unix-timestamp)
+   */
+  mtime?: number;
+  /**
+   * Amount of files and folders, only for folder
+   */
+  count?: {
+    files: number;
+    folders: number;
+  };
+  /**
+   * (supposed) Number of global revision of the folder
+   */
+  grev?: number;
+  /**
+   * (supposed) Number of current revision of the folder
+   */
+  rev?: number;
+  /**
+   * (supposed) Global id of the folder
+   */
+  tree?: 'string';
+}
+
 /**
  * Upload file to the cloud-server. It just upload file to the storage and return
  * it's hash and the size
@@ -31,14 +81,6 @@ type IAddData = string;
  * @return Promise
  */
 export async function upload(auth: ICredentials, file: string) {
-  // const filename = path.basename(file);
-  // const form = new FormData();
-
-  // form.append('file', , {
-  //   filename,
-  //   knownLength: fs.statSync(file).size
-  // });
-
   const { size: fileSize } = fs.statSync(file);
 
   const { upload: uploadResource } = await dispatcher(auth);
@@ -91,4 +133,25 @@ export async function add(
   }) as IApiDataResponse<IAddData>;
 
   return addRes;
+}
+
+/**
+ * Get info about the source (file or folder)
+ * @param auth Credentials
+ * @param path Path to the file in the cloud
+ * @return {Promise} Promise
+ */
+export async function info(
+  auth: ICredentials,
+  path: string
+): Promise<IApiDataResponse<IInfoData>> {
+  const infoRes = await requestToApi(auth, {
+    url: API_FILE,
+    method: 'GET',
+    query: {
+      home: path
+    }
+  }) as IApiDataResponse<IInfoData>;
+
+  return infoRes;
 }
