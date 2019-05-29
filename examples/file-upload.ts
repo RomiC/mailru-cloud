@@ -1,5 +1,6 @@
 import auth from '../src/auth';
 import { add, upload } from '../src/file';
+
 import { DOMAIN, LOGIN, PASSWORD } from './credentials';
 
 const file = './package.json';
