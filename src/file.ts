@@ -119,8 +119,8 @@ export async function add(
   name: string,
   uploadData: IUploadData,
   conflict: ConflictResolveStrategy = 'rename'
-): Promise<IApiDataResponse<IAddData>> {
-  const addRes = await requestToApi(auth, {
+): Promise<IAddData> {
+  const { body } = await requestToApi(auth, {
     url: API_FILE_ADD,
     method: 'POST',
     data: {
@@ -131,7 +131,7 @@ export async function add(
     }
   }) as IApiDataResponse<IAddData>;
 
-  return addRes;
+  return body;
 }
 
 /**
@@ -143,8 +143,8 @@ export async function add(
 export async function info(
   auth: ICredentials,
   path: string
-): Promise<IApiDataResponse<IInfoData>> {
-  const infoRes = await requestToApi(auth, {
+): Promise<IInfoData> {
+  const { body } = await requestToApi(auth, {
     url: API_FILE,
     method: 'GET',
     query: {
@@ -152,5 +152,5 @@ export async function info(
     }
   }) as IApiDataResponse<IInfoData>;
 
-  return infoRes;
+  return body;
 }

@@ -17,8 +17,8 @@ function getSourceInfo(fileInfoData: IInfoData): string {
 (async () => {
   try {
     const credentials = await auth(LOGIN, PASSWORD, DOMAIN);
-    const { body: fileInfoData } = await info(credentials, '/package.json');
-    const { body: folderInfoData } = await info(credentials, '/');
+    const fileInfoData = await info(credentials, '/package.json');
+    const folderInfoData = await info(credentials, '/');
 
     process.stdout.write(getSourceInfo(fileInfoData));
     process.stdout.write(getSourceInfo(folderInfoData));
