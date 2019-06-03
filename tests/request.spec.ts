@@ -1,13 +1,11 @@
 import FormData from 'form-data';
 import https from 'https';
-import { Writable } from 'stream';
+import { Stream, Writable } from 'stream';
 import request, { IRequestOptions } from '../src/request';
 
 jest.mock('https');
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+beforeEach(() => jest.clearAllMocks());
 
 test('should call https.request with correct default params', () => {
   const options: IRequestOptions = {
@@ -92,6 +90,39 @@ test('should call https.request with form data params', () => {
   expect(form.pipe).toHaveBeenCalledWith(expect.any(Object));
 });
 
+test('should support Stream as data param', () => {
+  const data = new Stream();
+  data.pipe = jest.fn();
+
+  const options: IRequestOptions = {
+    url: 'https://mail.ru',
+    method: 'POST',
+    query: {
+      queryParam1: 'val1',
+      queryParam2: 'val2'
+    },
+    data,
+    headers: {
+      header1: 'val1',
+      header2: 'val2'
+    }
+  };
+
+  request(options);
+
+  expect(https.request).toHaveBeenCalledWith({
+    protocol: 'https:',
+    host: 'mail.ru',
+    path: '/?queryParam1=val1&queryParam2=val2',
+    method: 'POST',
+    headers: {
+      header1: 'val1',
+      header2: 'val2'
+    }
+  });
+  expect(data.pipe).toHaveBeenCalledWith(expect.any(Object));
+});
+
 test('should resolve promise with response', () => {
   const clientRequestMock = https.request(null);
   const options: IRequestOptions = {
@@ -113,7 +144,7 @@ test('should resolve promise with response', () => {
   });
 });
 
-it('should reject promise with error for responses with bad status', () => {
+test('should reject promise with error for responses with bad status', () => {
   const clientRequestMock = https.request(null);
   const options: IRequestOptions = {
     url: 'https://mail.ru'
@@ -133,7 +164,7 @@ it('should reject promise with error for responses with bad status', () => {
   return expect(requestPromise).rejects.toEqual(err);
 });
 
-it('should reject promise with error in case of issue during request', () => {
+test('should reject promise with error in case of issue during request', () => {
   const clientRequestMock = https.request(null);
   const options: IRequestOptions = {
     url: 'https://mail.ru'

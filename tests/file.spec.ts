@@ -48,13 +48,12 @@ const auth = {
 beforeEach(() => jest.clearAllMocks());
 
 describe('add()', () => {
+  const addFileMock = '/file.txt';
+  const uploadDataMock = {
+    hash: '6AEB2E9257D40EA0A16659477717E0E5AFBFF288',
+    size: 1393
+  };
   it('should call request-to-api with proper params and resolves promise with body', () => {
-    const addFileMock = '/file.txt';
-    const uploadDataMock = {
-      hash: '6AEB2E9257D40EA0A16659477717E0E5AFBFF288',
-      size: 1393
-    };
-
     const addPromise = add(auth, addFileMock, uploadDataMock, 'rewrite');
 
     expect(requestToApi).toHaveBeenCalledWith(auth, {
@@ -70,6 +69,20 @@ describe('add()', () => {
     resolveRequestToApiPromise({ body: addFileMock });
 
     return expect(addPromise).resolves.toBe(addFileMock);
+  });
+
+  it('should have default value for conflict param equals \'rename\'', () => {
+    add(auth, addFileMock, uploadDataMock);
+
+    expect(requestToApi).toHaveBeenCalledWith(auth, {
+      url: API_FILE_ADD,
+      method: 'POST',
+      data: {
+        home: addFileMock,
+        ...uploadDataMock,
+        conflict: 'rename'
+      }
+    });
   });
 });
 

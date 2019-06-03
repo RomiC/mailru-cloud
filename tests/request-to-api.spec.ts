@@ -145,6 +145,15 @@ test('should parse response as JSON and return the result', () => {
   return expect(requestToApiPromise).resolves.toEqual(data);
 });
 
+test('should handle response as a plain text when json param isn\'t true', () => {
+  const data = 'plain text response';
+  const requestToApiPromise = requestToApi(auth, { url: 'https://api.mail.ru', json: false });
+
+  resolveRequestPromise({ body: data });
+
+  return expect(requestToApiPromise).resolves.toEqual(data);
+});
+
 test('should handle errors appeared during request', () => {
   const err = new Error('ERROR!');
   const requestToApiPromise = requestToApi(auth, { url: 'https://api.mail.ru' });

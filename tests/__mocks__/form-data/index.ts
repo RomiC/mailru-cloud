@@ -1,8 +1,8 @@
 export default class FormData {
-  private length: number = 666;
-  private boundary: string = "mock-boundary";
 
-  pipe = jest.fn(function (stream: WritableStream) { });
+  pipe = jest.fn();
+  private length: number = 666;
+  private boundary: string = 'mock-boundary';
 
   getLengthSync() {
     return this.length;
