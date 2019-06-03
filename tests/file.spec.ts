@@ -1,23 +1,51 @@
+import { setReadStream, setStat, StatsMock, StreamMock } from 'fs';
+import { Stream } from 'stream';
+import { promisify } from 'util';
+
 import { API_FILE, API_FILE_ADD } from '../src/constants';
+
+import dispatcher, { resolveDispatcherPromise } from '../src/dispatcher';
 import { add, info, upload } from '../src/file';
+import request, { resolveRequestPromise } from '../src/request';
 import requestToApi, { resolveRequestToApiPromise } from '../src/request-to-api';
 
+jest.mock('fs');
+jest.mock('../src/dispatcher');
+jest.mock('../src/request');
 jest.mock('../src/request-to-api');
+
+declare module 'fs' {
+  type StatsMock = any;
+  type StreamMock = any;
+  function setStat(s: StatsMock): void;
+  function setReadStream(stream: StreamMock): void;
+}
+
+declare module '../src/dispatcher' {
+  function resolveDispatcherPromise(value?: {} | PromiseLike<{}>): void;
+  function rejectDispatcherPromise(reason?: any): void;
+}
+
+declare module '../src/request' {
+  function resolveRequestPromise(value?: {} | PromiseLike<{}>): void;
+  function rejectRequestPromise(reason?: any): void;
+}
 
 declare module '../src/request-to-api' {
   function resolveRequestToApiPromise(value?: {} | PromiseLike<{}>): void;
   function rejectRequestToApiPromise(reason?: any): void;
 }
 
+const getNextTickPromise = promisify(process.nextTick);
+
 const auth = {
   // tslint:disable-next-line: max-line-length
   cookies: 'Mpop=1551101044;t=0000000000000000;sdcs=0000000000000000',
-  token: 'token'
+  token: 'token',
+  email: 'user@mail.ru'
 };
 
-beforeEach(() => {
-  jest.clearAllMocks();
-})
+beforeEach(() => jest.clearAllMocks());
 
 describe('add()', () => {
   it('should call request-to-api with proper params and resolves promise with body', () => {
@@ -75,7 +103,47 @@ describe('info()', () => {
 });
 
 describe('upload()', () => {
-  it('should call disaptcher and upload file using porvided url', () => {
+  it('should call disaptcher, upload file using provided url and resolve promise with file hash and size', () => {
+    const streamMock = new Stream();
+    const dispatcherResultMock = {
+      upload: [
+        { url: 'http://upload.mail.ru/' }
+      ]
+    };
 
-  })
-})
+    setStat({ size: 9999 });
+    setReadStream(streamMock);
+
+    const uploadPromise = upload(auth, './file.txt');
+
+    expect(dispatcher).toHaveBeenCalledWith(auth);
+    resolveDispatcherPromise(dispatcherResultMock);
+
+    return getNextTickPromise()
+      .then(() => {
+        expect(request).toHaveBeenCalledWith({
+          url: dispatcherResultMock.upload[0].url,
+          method: 'PUT',
+          data: streamMock,
+          headers: {
+            'Cookie': auth.cookies,
+            'Content-Length': 9999,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          query: {
+            'x-email': 'user@mail.ru'
+          }
+        });
+
+        resolveRequestPromise({ body: '7bc7ba8dd37d19e272cec1bb8415fd821c1735ec' });
+
+        return getNextTickPromise();
+      })
+      .then(() => {
+        return expect(uploadPromise).resolves.toEqual({
+          hash: '7bc7ba8dd37d19e272cec1bb8415fd821c1735ec',
+          size: 9999
+        });
+      });
+  });
+});

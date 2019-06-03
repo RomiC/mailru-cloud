@@ -1,22 +1,30 @@
-import { PathLike, Stats } from 'fs';
+import { Stats } from 'fs';
 import { Stream } from 'stream';
 
-let stat: Stats = null;
+export type StatsMock = Partial<Stats>;
+export type StreamMock = Partial<Stream>;
 
-export function setStat(s: Stats): void {
+let stat: StatsMock = null;
+
+export function setStat(s: StatsMock): void {
   stat = s;
 }
 
-export const statSync = jest.fn((): Stats => {
+const statSync = jest.fn((): StatsMock => {
   return stat;
 });
 
-let readStream: Stream = null;
+let readStream: StreamMock = null;
 
-export function setReadStream(stream: Stream): void {
+export function setReadStream(stream: StreamMock): void {
   readStream = stream;
 }
 
-export const createReadStream = jest.fn((): Stream => {
+const createReadStream = jest.fn((): StreamMock => {
   return readStream;
 });
+
+export default {
+  statSync,
+  createReadStream
+};

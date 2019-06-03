@@ -89,7 +89,7 @@ export async function upload(auth: ICredentials, file: string) {
     data: fs.createReadStream(file),
     headers: {
       'Cookie': auth.cookies,
-      'Content-Length': fs.statSync(file).size,
+      'Content-Length': fileSize,
       'X-Requested-With': 'XMLHttpRequest'
     },
     query: {
