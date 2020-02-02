@@ -69,6 +69,29 @@ export default async function requestToApi<B>(
       }
     });
 
+    /**
+     * TODO: Add handlers for the following cases:
+     * - ok: 200,
+     * - redirect: 302,
+     * - notmodified: 304,
+     * - invalid: 400,
+     * - paymentRequired: 402,
+     * - denied: 403,
+     * - notfound: 404,
+     * - unacceptable: 406,
+     * - timeout: 408,
+     * - conflict: 409,
+     * - unprocessable: 422,
+     * - failedDependency: 424,
+     * - manyRequests: 429,
+     * - retryWith: 449,
+     * - blockedContent: 451,
+     * - fail: 500,
+     * - notImplemented: 501,
+     * - unavailable: 503,
+     * - insufficient: 507,
+     */
+
     if (json === true) {
       const parsedData: IApiResponse<B> = JSON.parse(body);
 

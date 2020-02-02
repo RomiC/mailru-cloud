@@ -10,8 +10,13 @@ export class ClientRequest extends Writable {
   public end: (...args: any) => void = jest.fn();
 }
 
-const clientRequestMock = new ClientRequest();
+let clientRequestMock = new ClientRequest();
+
+export function setClientRequest(clientRequest: ClientRequest): void {
+  clientRequestMock = clientRequest;
+}
 
 export default {
-  request: jest.fn(() => clientRequestMock)
+  request: jest.fn(() => clientRequestMock),
+  get: jest.fn(() => clientRequestMock)
 };

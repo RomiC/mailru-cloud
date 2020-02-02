@@ -1,4 +1,6 @@
 import fs from 'fs';
+import https from 'https';
+import { stringify as stringifyObj } from 'querystring';
 
 import { ICredentials } from './auth';
 import { API_FILE, API_FILE_ADD } from './constants';
@@ -153,4 +155,53 @@ export async function info(
   }) as IApiDataResponse<IInfoData>;
 
   return body;
+}
+
+const DEFAULT_FILENAME = 'file';
+
+/**
+ * Download file from the cloud
+ * @param auth Credentials
+ * @param file Path+filename of the file in cloud (without leading hash)
+ * @param saveAs Path+filename on the local mcachine
+ * @return {Promise} Promise
+ */
+export async function download(auth: ICredentials, file: string, saveAs?: string): Promise<string> {
+  const { get: getResource } = await dispatcher(auth);
+  const downloadUrl = `${getResource[0].url}${file}?${stringifyObj({ 'x-email': auth.email })}`;
+
+  return new Promise((resolve, reject) => {
+    https.get(downloadUrl, {
+      headers: {
+        Cookie: auth.cookies
+      }
+    }, (res) => {
+      if (res.statusCode === 200) {
+        let outputFile: string;
+
+        if (saveAs != null) {
+          outputFile = saveAs;
+        } else {
+          const { 'content-disposition': contentDisposition = '' } = res.headers;
+          const fileNameIndex = contentDisposition.indexOf('filename=');
+
+          if (fileNameIndex >= 0) {
+            outputFile = /"([^"]+)"/.exec(contentDisposition.substr(fileNameIndex))[1];
+          } else {
+            outputFile = DEFAULT_FILENAME;
+          }
+        }
+
+        console.log(`calling fs.createWriteStream with '${outputFile}'`);
+        const writeStream = fs.createWriteStream(outputFile);
+
+        res.pipe(writeStream).on('finish', () => resolve(outputFile));
+      } else {
+        const err = new Error(res.statusMessage);
+        err.name = res.statusCode.toString();
+
+        reject(err);
+      }
+    }).on('error', reject);
+  });
 }

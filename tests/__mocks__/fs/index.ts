@@ -20,11 +20,18 @@ export function setReadStream(stream: StreamMock): void {
   readStream = stream;
 }
 
-const createReadStream = jest.fn((): StreamMock => {
-  return readStream;
-});
+const createReadStream = jest.fn((): StreamMock => readStream);
+
+let writeStream: StreamMock = null;
+
+export function setWriteStream(stream: StreamMock): void {
+  writeStream = stream;
+}
+
+const createWriteStream = jest.fn((): StreamMock => writeStream);
 
 export default {
   statSync,
-  createReadStream
+  createReadStream,
+  createWriteStream
 };

@@ -1,15 +1,18 @@
-import { setReadStream, setStat, StatsMock, StreamMock } from 'fs';
-import { Stream } from 'stream';
+import fs, { setReadStream, setStat, setWriteStream } from 'fs';
+import https, {setClientRequest} from 'https';
+import { Readable, Stream } from 'stream';
 import { promisify } from 'util';
 
 import { API_FILE, API_FILE_ADD } from '../src/constants';
 
 import dispatcher, { resolveDispatcherPromise } from '../src/dispatcher';
-import { add, info, upload } from '../src/file';
+import { add, download, info, upload } from '../src/file';
 import request, { resolveRequestPromise } from '../src/request';
 import requestToApi, { resolveRequestToApiPromise } from '../src/request-to-api';
+import { ClientRequest } from './__mocks__/https';
 
 jest.mock('fs');
+jest.mock('https');
 jest.mock('../src/dispatcher');
 jest.mock('../src/request');
 jest.mock('../src/request-to-api');
@@ -19,6 +22,11 @@ declare module 'fs' {
   type StreamMock = any;
   function setStat(s: StatsMock): void;
   function setReadStream(stream: StreamMock): void;
+  function setWriteStream(stream: StreamMock): void;
+}
+
+declare module 'https' {
+  function setClientRequest(clientRequest: ClientRequest): void;
 }
 
 declare module '../src/dispatcher' {
@@ -157,6 +165,109 @@ describe('upload()', () => {
           hash: '7bc7ba8dd37d19e272cec1bb8415fd821c1735ec',
           size: 9999
         });
+      });
+  });
+});
+
+describe('download()', () => {
+  const dispatcherResultMock = {
+    get: [
+      { url: 'https://get.mail.ru/' }
+    ]
+  };
+
+  // tslint:disable-next-line: max-line-length
+  it('should obtain get-url from dispatcher, request remote resource, pipe to the stream and resolve promise with a filename', () => {
+    const clientRequestMock = new ClientRequest();
+    const responseMock: any = new Readable();
+    const writeStreamMock = new Stream();
+    responseMock['statusCode'] = 200;
+    responseMock['headers'] = {
+      contentDispostion: 'attachment; filename="file.txt"'
+    };
+
+    const downloadPromise = download(auth, 'file.txt');
+
+    expect(dispatcher).toHaveBeenCalledWith(auth);
+    resolveDispatcherPromise(dispatcherResultMock);
+
+    return getNextTickPromise()
+      .then(() => {
+        expect(https.get).toHaveBeenCalledWith(
+          `https://get.mail.ru/file.txt?x-email=${encodeURIComponent(auth.email)}`,
+          { headers: { Cookie: auth.cookies } },
+          expect.any(Function)
+        );
+
+        setWriteStream(writeStreamMock);
+
+        clientRequestMock.emit('response', responseMock);
+        return getNextTickPromise();
+      }).then(() => {
+        console.log(downloadPromise);
+        responseMock.emit('finish');
+
+        return getNextTickPromise();
+      }).then(() => {
+        expect(fs.createWriteStream).toHaveBeenCalledWith('file.txt');
+        expect(downloadPromise).resolves.toBe('file.txt');
+      });
+  });
+
+  it('should reject promise in case of non-200-response', () => {
+    const clientRequestMock = https.get(null);
+    const responseMock: any = new Readable();
+    responseMock['statusCode'] = 404;
+    responseMock['statusMessage'] = 'NOT FOUND';
+
+    const downloadPromise = download(auth, 'file.txt');
+    resolveDispatcherPromise(dispatcherResultMock);
+
+    return getNextTickPromise()
+      .then(() => {
+        clientRequestMock.emit('response', responseMock);
+
+        return getNextTickPromise();
+      })
+      .then(() => {
+        const err = new Error('NOT FOUND');
+        err.name = '404';
+
+        expect(downloadPromise).rejects.toEqual(err);
+      });
+  });
+
+  it('should use saveAs-param value as an output filename', () => {
+    const clientRequestMock = https.get(null);
+    const writeStreamMock = new Stream();
+    const responseMock: any = new Readable();
+    responseMock['statusCode'] = 200;
+    responseMock['headers'] = {
+      contentDispostion: 'attachment; filename="file.txt"'
+    };
+
+    const downloadPromise = download(auth, 'file.txt', 'file2.txt');
+
+    expect(dispatcher).toHaveBeenCalledWith(auth);
+    resolveDispatcherPromise(dispatcherResultMock);
+
+    return getNextTickPromise()
+      .then(() => {
+        clientRequestMock.emit('response', responseMock);
+
+        setWriteStream(writeStreamMock);
+
+        return getNextTickPromise();
+      })
+      .then(() => {
+        expect(fs.createWriteStream).toHaveBeenCalledWith('file2.txt');
+
+        responseMock.emit('finish');
+
+        return getNextTickPromise();
+      })
+      .then(() => {
+        expect(downloadPromise).resolves.toBe('file2.txt');
       });
   });
 });
