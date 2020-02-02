@@ -37,3 +37,9 @@ jspm_packages
 .node_repl_history
 
 examples/credentials.js
+examples/credentials.ts
+
+dist
+.env
+.DS_Store
+original

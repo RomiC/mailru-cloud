@@ -7,17 +7,34 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/examples/user.js"
+      "name": "Jest Current File",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "${relativeFile}",
+        "--config",
+        "jest.config.js"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      }
     },
     {
-      "name": "Launch server.js via nodemon",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "nodemon",
-      "program": "${workspaceRoot}/examples/file.js",
-      "restart": true,
-      "console": "integratedTerminal"
+      "name": "Launch current file w/ ts-node",
+      "protocol": "inspector",
+      "args": [
+        "${relativeFile}"
+      ],
+      "cwd": "${workspaceRoot}",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }

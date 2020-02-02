@@ -1,10 +1,15 @@
 {
   "name": "mailru-cloud",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "NodeJS client for Mail.ru Cloud service",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "npm test"
+    "build": "tsc -p .",
+    "start": "ts-node --files -P ./tsconfig.json",
+    "lint": "tslint -c tslint.json 'src/*.ts'",
+    "test": "jest --no-cache --testPathIgnorePatterns='<rootDir>/tests/integration/'",
+    "test:integration": "jest --no-coverage --testPathPattern='tests/integration/'",
+    "coverage": "codecov --clear --token=bae63dcc-3200-452b-9ba9-587255f61997"
   },
   "repository": {
     "type": "git",
@@ -15,6 +20,9 @@
     "drive",
     "mailru"
   ],
+  "engines": {
+    "node": ">= 8.9.0"
+  },
   "author": "Roman Charugin <i@charugin.ru>",
   "license": "MIT",
   "bugs": {
@@ -22,9 +30,21 @@
   },
   "homepage": "https://github.com/RomiC/mailru-cloud#readme",
   "devDependencies": {
-    "form-data": "^2.2.0"
+    "@types/dotenv": "^6.1.1",
+    "@types/form-data": "^2.2.1",
+    "@types/jest": "^23.3.9",
+    "@types/node": "^10.12.2",
+    "codecov": "^3.1.0",
+    "dotenv": "^8.0.0",
+    "jest": "^24.8.0",
+    "jest-util": "^24.3.0",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.1.6"
   },
   "dependencies": {
-    "bluebird": "^3.5.0"
+    "form-data": "^2.2.0"
   }
 }

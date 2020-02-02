@@ -20,7 +20,7 @@ Mostly come with 302-redirect header. In case of successfull authorization, the 
 
 ```
 GarageID=e2915d7c8fd1469c85f5b7e176e14b43; domain=.auth.mail.ru
-Mpop=1498566275:62075b6f605d0871190502190805001b0b0d1d0205084b6a515f475a030503091f04077b164a5e5d50591b545d5046425e585e1755535b54174b44:roman.charugin@mail.ru:; domain=.mail.ru
+Mpop=1498566275:62075b6f605d0871190502190805001b0b0d1d0205084b6a515f475a030503091f04077b164a5e5d50591b545d5046425e585e1755535b54174b44:your_mail@mail.ru:; domain=.mail.ru
 ssdc=392a7dc9fca94adebec2fe465c21a4b5; domain=.auth.mail.ru
 ssdc_info=392a:0:1498566275; domain=.auth.mail.ru
 t=obLD1AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAgAAAAjABADwwcA; domain=.mail.ru
@@ -94,7 +94,8 @@ Get dipatcher info. Collection of properties including links for upload and down
 		"weblink_thumbnails": [{"count": "50", "url": "https://cloclo3.datacloudmail.ru/weblink/thumb/"}],
 		"auth": [{"count": "500", "url": "https://swa.mail.ru/cgi-bin/auth"}],
 		"view": [{"count": "250", "url": "https://cloclo2.datacloudmail.ru/view/"}],
-		"get": [{"count": "100", "url": "https://cloclo27.datacloudmail.ru/get/"}],
+    "get": [{"count": "100", "url": "https://cloclo27.datacloudmail.ru/get/"}],
+    "stock": [{"count": "100", "url": "https://cloclo27.datacloudmail.ru/stock/"}]
 		"upload": [{"count": "25", "url": "https://cloclo22-upload.cloud.mail.ru/upload/"}],
 		"thumbnails": [{"count": "250", "url": "https://cloclo3.cloud.mail.ru/thumb/"}]
 	},
@@ -114,33 +115,23 @@ Get dipatcher info. Collection of properties including links for upload and down
 #### Query params
 
 * **home** (`/Cards`) - path to file
-* **api** (`2`) - (supposed) api version number
-* **build** (`hotfix_CLOUDWEB-7479_41-0-2.201703311709`) - (supposed) client version
-* **x-page-id** (`IQFp762REe`) - (???)
-* **email** (`roman.charugin@mail.ru`) - user email
-* **x-email** (`roman.charugin@mail.ru`) - (supposed) additional user email (against CSRF)
-* **token** (`8UaGHDKdytLnS7rUM4yhL2UexPr7QsdY`) - auth token
-* **_** (`1492087095170`) - (supposed) timestamp
 
 #### Response
 
 ```json
 {
-  "email": "roman.charugin@mail.ru",
+  "email": "your_mail@mail.ru",
   "body": {
-    "count": {
-      "folders": 3,
-      "files": 7
-    },
-    "tree": "323633323134323230303030",
-    "name": "/",
-    "grev": 39,
-    "kind": "folder",
-    "rev": 8,
-    "type": "folder",
-    "home": "/"
+    "mtime": 1559135751,
+    "virus_scan": "pass",
+    "name": "package.json",
+    "size": 1393,
+    "hash": "6AEB2E9257D40EA0A16659477717E0E5AFBFF288",
+    "kind": "file",
+    "type": "file",
+    "home": "/package.json"
   },
-  "time": 1492087233908,
+  "time": 1559136098297,
   "status": 200
 }
 ```
@@ -150,18 +141,14 @@ Get dipatcher info. Collection of properties including links for upload and down
 (supposed) Getting info about file uploading options
 
 
-### `POST https://%server_name%.cloud.mail.ru/upload`
+### `PUT https://%server_name%.cloud.mail.ru/upload`
 
-Uploading file to cloud. Require `Mpop`-cookie plus valid `User-Agent` header. `Content-Type` should be `multipart/form-data` with specified boundary value. You must also send `Content-Length` header with correct total amount of data in Bytes.
-
-#### Form data boundaries
-
-* **file** - Uploaded file; should also have `filename` param with the file name
+Uploading file to cloud. Require `Mpop`-cookie plus valid `X-Requested-With` header with value `'XMLHttpRequest'`. You must also send `Content-Length` header with correct total amount of data in Bytes. File should be sent as raw data.
 
 #### Response
 
 ```
-3C194D206659B0678EDF17E21050BF82B277BCFC;5809
+3C194D206659B0678EDF17E21050BF82B277BCFC
 ```
 
 ### `POST https://%server_name%.cloud.mail.ru/refrsh`
@@ -174,15 +161,19 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 
 #### Form data
 
-* **home** (`//javascript9.ics`) - path to save the file
+* **home** (`/javascript9.ics`) - path to save the file
 * **hash** (`3C194D206659B0678EDF17E21050BF82B277BCFC`) - file hash
 * **size** (`5809`) - file size
-* **conflict** (`rename`) - (supposed) strategy name in case of file is already exists
+* **conflict** (`rename`) - (supposed) strategy name in case of file is already exists:
+  * `'strict'` – (supposed) wait for user response
+  * `'rename'` - (supposed) automatically rename
+  * `'rewrite'` - (supposed) automatically rewrite existing file
+  * `'ignore'` - (supposed) skip uploaded file (not implemented yet)
 
 #### Response
 ```json
 {
-  "email": "roman.charugin@mail.ru",
+  "email": "your_mail@mail.ru",
   "body": "/javascript9 (1).ics",
   "time": 1492092621078,
   "status": 200
@@ -219,7 +210,7 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 
 ```json
 {
-  "email": "roman.charugin@mail.ru",
+  "email": "your_mail@mail.ru",
   "body": {
     "count": {
       "folders": 3,
@@ -289,8 +280,8 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 * **api** (`2`) - (supposed) api version number
 * **build** (`hotfix_CLOUDWEB-7479_41-0-2.201703311709`) - (supposed) client version
 * **x-page-id** (`IQFp762REe`) - (???)
-* **email** (`roman.charugin@mail.ru`) - user email
-* **x-email** (`roman.charugin@mail.ru`) - (supposed) additional user email (against CSRF)
+* **email** (`your_mail@mail.ru`) - user email
+* **x-email** (`your_mail@mail.ru`) - (supposed) additional user email (against CSRF)
 * **token** (`aFFREMTZBQfxHZadefemdkJv8S6fLxxo`) - auth token
 * **_** (`1492087095134`) - (supposed) timestamp
 
@@ -298,7 +289,7 @@ Adding file to the cloud. (!) Not uploading, but adding uploaded file to the clo
 
 ```json
 {
-  "email": "roman.charugin@mail.ru",
+  "email": "your_mail@mail.ru",
   "body": [],
   "time": 1492087096085,
   "status": "200"
@@ -373,7 +364,7 @@ Getting new (or updating existed) token.
 
 ```json
 {
-  "email": "roman.charugin@mail.ru",
+  "email": "your_mail@mail.ru",
   "body": {
     "token": "8UaGHDKdytLnS7rUM4yhL2UexPr7QsdY"
   },
@@ -426,11 +417,11 @@ Getting info about space.
 
 ```json
 {
-  "email": "roman.charugin@mail.ru",
+  "email": "your_mail@mail.ru",
   "body": {
     "overquota": false,
-    "used": 2031,
-    "total": 1048576
+    "bytes_used": 2031,
+    "bytes_total": 1048576
   },
   "time": 1492087195197,
   "status": 200

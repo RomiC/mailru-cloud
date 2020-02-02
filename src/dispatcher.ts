@@ -1,0 +1,76 @@
+import requestToApi, { IApiDataResponse } from './request-to-api';
+
+import { API_DISPATCHER } from './constants';
+
+import { ICredentials } from './auth';
+
+interface IEndpoint {
+  /**
+   * (supposed) Requests limit
+   */
+  count: number;
+  /**
+   * Endpoint url
+   */
+  url: string;
+}
+
+interface IDispatcherData {
+  /**
+   * (supposed) Video streaming endpoints
+   */
+  video: IEndpoint[];
+  /**
+   * (supposed) Direct links for image
+   */
+  weblink_view: IEndpoint[];
+  /**
+   * (supposed) Direct links for video
+   */
+  weblink_video: IEndpoint[];
+  /**
+   * Direct links to download file
+   */
+  weblink_get: IEndpoint[];
+  /**
+   * (supposed) Direct links for the image thumbnails
+   */
+  weblink_thumbnails: IEndpoint[];
+  /**
+   * Auth links
+   */
+  auth: IEndpoint[];
+  /**
+   * (supposed) Links to view image
+   */
+  view: IEndpoint[];
+  /**
+   * (supposed) Links to download file
+   */
+  get: IEndpoint[];
+  /**
+   * Links to upload file
+   */
+  upload: IEndpoint[];
+  /**
+   * Links to the thumbnails
+   */
+  thumbnails: IEndpoint[];
+  /**
+   * (supposed) Links to share an image
+   */
+  stock: IEndpoint[];
+}
+
+/**
+ * Get dispatcher info
+ * @param auth Object with auth-properties
+ * @return Promise
+ */
+export default async function dispatcher(auth: ICredentials): Promise<IDispatcherData> {
+  const { body } = await requestToApi<IDispatcherData>(auth, {
+    url: API_DISPATCHER
+  }) as IApiDataResponse<IDispatcherData>;
+
+  return body;
+}
