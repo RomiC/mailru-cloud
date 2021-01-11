@@ -1,4 +1,4 @@
-import { IncomingHttpHeaders, IncomingMessage } from 'http';
+import { IncomingHttpHeaders } from 'http';
 
 import filterIncomingCookies from './filter-incoming-cookies';
 import request from './request';
@@ -15,14 +15,10 @@ export interface ICredentials {
   /**
    * CSRF-token
    */
-  token?: string
+  token?: string;
 }
 
-import {
-  API_BASE,
-  AUTH_COMMON_URL,
-  AUTH_SDC_REDIRECT_URL
-} from './constants';
+import { API_BASE, AUTH_COMMON_URL, AUTH_SDC_REDIRECT_URL } from './constants';
 import { csrf } from './token';
 
 interface IAuthRequestContext {
@@ -34,6 +30,7 @@ interface IAuthRequestContext {
 
 /**
  * Common auth request
+ *
  * @param login User login
  * @param password User password
  * @param domain User email's domain
@@ -68,6 +65,7 @@ async function commonAuth(login: string, password: string, domain: string): Prom
 
 /**
  * Get sdc-url
+ *
  * @param context Auth-process context
  * @return Promise
  */
@@ -82,9 +80,9 @@ async function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestCont
     }
   });
 
-  const location = info.headers['location'];
+  const { location = '' } = info.headers;
 
-  if (info.statusCode !== 302 || !/token=[^\&]+/.test(location)) {
+  if (info.statusCode !== 302 || !/token=[^&]+/.test(location)) {
     throw new Error('Failed to get SDC-url');
   }
 
@@ -96,10 +94,15 @@ async function getSdcUrl(context: IAuthRequestContext): Promise<IAuthRequestCont
 
 /**
  * Get sdc-token
- * @param context Auth-proccess context
+ *
+ * @param context Auth-process context
  * @return Promise
  */
 async function getSdcToken(context: IAuthRequestContext): Promise<IAuthRequestContext> {
+  if (!context.sdcUrl) {
+    throw new Error('SDC-url is missing from the context');
+  }
+
   const { info } = await request({
     url: context.sdcUrl,
     headers: {
@@ -115,16 +118,14 @@ async function getSdcToken(context: IAuthRequestContext): Promise<IAuthRequestCo
 
   return {
     ...context,
-    cookies: [
-      ...context.cookies,
-      ...cookies
-    ]
+    cookies: [...(context.cookies || []), ...cookies]
   };
 }
 
 /**
  * Obtain CSRF-token
- * @param context Auth-proccess context
+ *
+ * @param context Auth-process context
  */
 async function getCsrfToken(context: IAuthRequestContext): Promise<IAuthRequestContext> {
   const { token } = await csrf({
@@ -143,16 +144,14 @@ async function getCsrfToken(context: IAuthRequestContext): Promise<IAuthRequestC
 
 /**
  * Authorize user and obtain credentials for the API
+ *
  * @param login User's login
  * @param password User's password
  * @param domain User's mail domain (mail.ru, bk.ru, etc.)
  * @return Promise
  */
-export default async function auth(login: string, password: string, domain: string): Promise<ICredentials> {
-  const context = await commonAuth(login, password, domain)
-    .then(getSdcUrl)
-    .then(getSdcToken)
-    .then(getCsrfToken);
+export async function auth(login: string, password: string, domain: string): Promise<ICredentials> {
+  const context = await commonAuth(login, password, domain).then(getSdcUrl).then(getSdcToken).then(getCsrfToken);
 
   return {
     email: context.email,

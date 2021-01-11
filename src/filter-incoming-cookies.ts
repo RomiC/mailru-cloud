@@ -17,6 +17,7 @@ interface ICookie {
 
 /**
  * Filter cookies for the requested url
+ *
  * @param url URL
  * @param cookies Array of cookies
  * @return Return string of filtered cookies
@@ -25,6 +26,10 @@ export default function filterIncomingCookies(
   url: string,
   cookies: IncomingHttpHeaders['set-cookie']
 ): string {
+  if (!cookies) {
+    return '';
+  }
+
   const { hostname: domain, pathname: path } = parseUrl(url);
   const prefixDomain = `.${domain}`;
 

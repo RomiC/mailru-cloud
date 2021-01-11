@@ -13,6 +13,7 @@ interface ICsrfData {
 
 /**
  * Get CSRF-token
+ *
  * @param auth Object with auth-properties
  * @return Promise
  */

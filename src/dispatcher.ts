@@ -64,13 +64,14 @@ interface IDispatcherData {
 
 /**
  * Get dispatcher info
+ *
  * @param auth Object with auth-properties
  * @return Promise
  */
-export default async function dispatcher(auth: ICredentials): Promise<IDispatcherData> {
-  const { body } = await requestToApi<IDispatcherData>(auth, {
+export async function dispatcher(auth: ICredentials): Promise<IDispatcherData> {
+  const { body } = (await requestToApi<IDispatcherData>(auth, {
     url: API_DISPATCHER
-  }) as IApiDataResponse<IDispatcherData>;
+  })) as IApiDataResponse<IDispatcherData>;
 
   return body;
 }

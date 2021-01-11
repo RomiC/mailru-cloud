@@ -24,6 +24,7 @@ export interface IRequestOptions {
   url: string;
   /**
    * Request method name
+   *
    * @default 'GET'
    */
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -52,6 +53,7 @@ export interface IResponse {
 
 /**
  * Make a request
+ *
  * @param {object} options Object with request params
  * @return {Promise} Promise
  */
@@ -92,14 +94,14 @@ export default async function request(options: IRequestOptions): Promise<IRespon
       res.on('data', (chunk: string) => responseData += chunk);
 
       res.on('end', () => {
-        if (res.statusCode >= 200 && res.statusCode < 400) {
+        if (res.statusCode && res.statusCode >= 200 && res.statusCode < 400) {
           resolve({
             info: res,
             body: responseData
           });
         } else {
           const err = new Error(responseData);
-          err.name = res.statusCode.toString();
+          err.name = res.statusCode ? res.statusCode.toString() : 'Unknown';
           reject(err);
         }
       });

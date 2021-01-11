@@ -1,10 +1,10 @@
-import auth from '../src/auth';
-import { IInfoData, info } from '../src/file';
+import auth from '../dist/auth.js';
+import { info } from '../dist/file.js';
 
-import { DOMAIN, LOGIN, PASSWORD } from './credentials';
-import humanReadableSize from './human-readable-size';
+import { DOMAIN, LOGIN, PASSWORD } from './credentials.js';
+import humanReadableSize from './human-readable-size.js';
 
-function getSourceInfo(fileInfoData: IInfoData): string {
+function getSourceInfo(fileInfoData) {
   return `
   path: ${fileInfoData.home}
   type: ${fileInfoData.type}

@@ -32,6 +32,7 @@ export type IApiResponse<B> = IApiDataResponse<B> | string;
 
 /**
  * Make a certain request to the API
+ *
  * @param auth Auth options
  * @param options Other request options
  * @return Promise
@@ -92,8 +93,8 @@ export default async function requestToApi<B>(
      * - insufficient: 507,
      */
 
-    if (json === true) {
-      const parsedData: IApiResponse<B> = JSON.parse(body);
+    if (json === true && !!body) {
+      const parsedData: IApiResponse<B> = JSON.parse(body) as IApiResponse<B>;
 
       return parsedData;
     } else {

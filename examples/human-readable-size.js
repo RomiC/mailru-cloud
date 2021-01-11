@@ -1,5 +1,5 @@
-export default function humanReadableSize(bytes: number): string {
-  const names: string[] = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+export default function humanReadableSize(bytes) {
+  const names = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
   let rest = bytes;
 

@@ -14,7 +14,7 @@ export const AUTH_COMMON_URL = `${AUTH_BASE}/cgi-bin/auth`;
 export const AUTH_SDC_REDIRECT_URL = `${AUTH_BASE}/sdc`;
 
 /**
- * Base URL for eeach request
+ * Base URL for each request
  */
 export const API_BASE = 'https://cloud.mail.ru/api/v2';
 
@@ -39,7 +39,7 @@ export const API_FILE_ADD = `${API_FILE}/add`;
 export const API_TOKENS = `${API_BASE}/tokens`;
 
 /**
- * Requsting new csrf-token
+ * Requesting new csrf-token
  */
 export const API_TOKENS_CSRF = `${API_TOKENS}/csrf`;
 
@@ -56,5 +56,5 @@ export const API_USER_SPACE = `${API_USER}/space`;
 /**
  * User-Agent
  */
-// tslint:disable-next-line:max-line-length
+// eslint-disable-next-line max-len
 export const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';

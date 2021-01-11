@@ -1,5 +1,5 @@
 import { promisify } from 'util';
-import auth from '../src/auth';
+import { auth } from '../src/auth';
 import { API_BASE, AUTH_COMMON_URL, AUTH_SDC_REDIRECT_URL } from '../src/constants';
 import filterIncomingCookies from '../src/filter-incoming-cookies';
 import request, { rejectRequestPromise, resolveRequestPromise } from '../src/request';
@@ -30,13 +30,13 @@ const commonAuthResponse = {
   info: {
     headers: {
       'set-cookie': [
-        // tslint:disable: max-line-length
+        /* eslint-disable max-len */
         'GarageID=0000000000000000000000000000; expires=Tue, 25 Feb 2120 13:24:04 GMT; path=/; domain=.auth.mail.ru; Secure; HttpOnly',
         'Mpop=1551101044:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:roman.charugin@mail.ru:; expires=Sun, 26 May 2119 13:24:04 GMT; path=/; domain=.mail.ru',
         'ssdc=5d8e447c3aa546aae06edb49eb237; expires=Sun, 26 May 2119 13:24:04 GMT; path=/; domain=.auth.mail.ru; Secure; HttpOnly',
         'ssdc_info=5d8e:0:00000000; expires=Sun, 26 May 2119 13:24:04 GMT; path=/; domain=.auth.mail.ru; HttpOnly',
         't=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000; expires=Sat, 24 Aug 2119 13:24:04 GMT; path=/; domain=.mail.ru'
-        // tslint:enable: max-line-length
+        /* eslint-enable */
       ]
     }
   }
@@ -127,8 +127,9 @@ it('should return credentials for correct login and password', () => {
     })
     .then((res) => {
       expect(res).toEqual({
-        // tslint:disable-next-line: max-line-length
-        cookies: 'Mpop=1551101044:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:roman.charugin@mail.ru:;t=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000;sdcs=0000000000000000',
+        cookies:
+          // eslint-disable-next-line max-len
+          'Mpop=1551101044:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:roman.charugin@mail.ru:;t=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000;sdcs=0000000000000000',
         token: getCsrfTokenResponse.token,
         email: 'correctLogin@correctDomain'
       });
@@ -176,7 +177,7 @@ describe('getSdcUrl()', () => {
     });
   });
 
-  it('should reject promise when getSdcUrl doesn\'t return redirect status', () => {
+  it("should reject promise when getSdcUrl doesn't return redirect status", () => {
     const authPromise = auth('login', 'password', 'mail.ru');
 
     resolveRequestPromise(commonAuthResponse);

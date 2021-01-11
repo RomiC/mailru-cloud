@@ -1,7 +1,7 @@
-import auth from '../src/auth';
-import { add, upload } from '../src/file';
+import auth from '../dist/auth.js';
+import { add, upload } from '../dist/file.js';
 
-import { DOMAIN, LOGIN, PASSWORD } from './credentials';
+import { DOMAIN, LOGIN, PASSWORD } from './credentials.js';
 
 const file = './package.json';
 

@@ -1,11 +1,11 @@
 import fs, { setReadStream, setStat, setWriteStream } from 'fs';
-import https, {setClientRequest} from 'https';
+import https, { setClientRequest } from 'https';
 import { Readable, Stream } from 'stream';
 import { promisify } from 'util';
 
 import { API_FILE, API_FILE_ADD } from '../src/constants';
 
-import dispatcher, { resolveDispatcherPromise } from '../src/dispatcher';
+import { dispatcher, resolveDispatcherPromise } from '../src/dispatcher';
 import { add, download, info, upload } from '../src/file';
 import request, { resolveRequestPromise } from '../src/request';
 import requestToApi, { resolveRequestToApiPromise } from '../src/request-to-api';
@@ -79,7 +79,7 @@ describe('add()', () => {
     return expect(addPromise).resolves.toBe(addFileMock);
   });
 
-  it('should have default value for conflict param equals \'rename\'', () => {
+  it("should have default value for conflict param equals 'rename'", () => {
     add(auth, addFileMock, uploadDataMock);
 
     expect(requestToApi).toHaveBeenCalledWith(auth, {
@@ -127,9 +127,7 @@ describe('upload()', () => {
   it('should call disaptcher, upload file using provided url and resolve promise with file hash and size', () => {
     const streamMock = new Stream();
     const dispatcherResultMock = {
-      upload: [
-        { url: 'http://upload.mail.ru/' }
-      ]
+      upload: [{ url: 'http://upload.mail.ru/' }]
     };
 
     setStat({ size: 9999 });
@@ -147,7 +145,7 @@ describe('upload()', () => {
           method: 'PUT',
           data: streamMock,
           headers: {
-            'Cookie': auth.cookies,
+            Cookie: auth.cookies,
             'Content-Length': 9999,
             'X-Requested-With': 'XMLHttpRequest'
           },
@@ -171,18 +169,16 @@ describe('upload()', () => {
 
 describe('download()', () => {
   const dispatcherResultMock = {
-    get: [
-      { url: 'https://get.mail.ru/' }
-    ]
+    get: [{ url: 'https://get.mail.ru/' }]
   };
 
-  // tslint:disable-next-line: max-line-length
+  // eslint-disable-next-line max-len
   it('should obtain get-url from dispatcher, request remote resource, pipe to the stream and resolve promise with a filename', () => {
     const clientRequestMock = new ClientRequest();
     const responseMock: any = new Readable();
     const writeStreamMock = new Stream();
-    responseMock['statusCode'] = 200;
-    responseMock['headers'] = {
+    responseMock.statusCode = 200;
+    responseMock.headers = {
       contentDispostion: 'attachment; filename="file.txt"'
     };
 
@@ -203,12 +199,14 @@ describe('download()', () => {
 
         clientRequestMock.emit('response', responseMock);
         return getNextTickPromise();
-      }).then(() => {
+      })
+      .then(() => {
         console.log(downloadPromise);
         responseMock.emit('finish');
 
         return getNextTickPromise();
-      }).then(() => {
+      })
+      .then(() => {
         expect(fs.createWriteStream).toHaveBeenCalledWith('file.txt');
         expect(downloadPromise).resolves.toBe('file.txt');
       });

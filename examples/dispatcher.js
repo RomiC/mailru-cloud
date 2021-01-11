@@ -1,7 +1,7 @@
-import auth from '../src/auth';
-import dispatcher from '../src/dispatcher';
+import auth from '../dist/auth.js';
+import dispatcher from '../dist/dispatcher.js';
 
-import { DOMAIN, LOGIN, PASSWORD } from './credentials';
+import { DOMAIN, LOGIN, PASSWORD } from './credentials.js';
 
 auth(LOGIN, PASSWORD, DOMAIN)
   .then(dispatcher)
