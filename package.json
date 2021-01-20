@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/RomiC/mailru-cloud#readme",
   "devDependencies": {
-    "form-data": "2.2.0"
+    "form-data": "3.0.0"
   },
   "dependencies": {
     "bluebird": "^3.5.0"
